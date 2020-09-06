@@ -12,6 +12,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Properties;
 
+/**
+ * Client abstract class that implements the remoteService connection functionality
+ * common to every client.
+ */
 public abstract class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
     private static int REGISTRY_PORT = 1099;
@@ -21,5 +25,8 @@ public abstract class Client {
         final Registry registry = LocateRegistry.getRegistry(address, REGISTRY_PORT);
         // return registry.lookup(serviceName.getServiceName());
         return null;
+    }
+    /* protected */ static boolean containsValidArguments(Properties properties){
+        return properties.containsKey("serverAddress");
     }
 }
