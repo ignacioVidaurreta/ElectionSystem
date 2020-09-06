@@ -26,7 +26,7 @@ public class VoteParser {
             File inputFile = new File(this.voteFilePath);
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
 
-            this.parsedVotes = br.lines().skip(1).map(readVote).collect(Collectors.toList());
+            this.parsedVotes = br.lines().map(readVote).collect(Collectors.toList());
             br.close();
         }catch(IOException ex){
             ex.printStackTrace();
