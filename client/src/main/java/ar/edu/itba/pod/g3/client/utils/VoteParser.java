@@ -27,8 +27,10 @@ public class VoteParser {
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile)));
 
             this.parsedVotes = br.lines().map(readVote).collect(Collectors.toList());
+            logger.info(String.format("Parsed %d votes", this.parsedVotes.size()));
             br.close();
         }catch(IOException ex){
+            logger.error("There was an error while parsing the votes");
             ex.printStackTrace();
         }
     }
