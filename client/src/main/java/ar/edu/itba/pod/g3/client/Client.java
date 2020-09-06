@@ -14,10 +14,11 @@ import java.util.Properties;
 
 public abstract class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
+    private static int REGISTRY_PORT = 1099;
 
     static Remote getRemoteService(final String address, final ServiceName serviceName) throws NotBoundException, RemoteException{
-        logger.info(String.format("Connecting to %s:%d/%s", address, 1099, serviceName.getServiceName()));
-        final Registry registry = LocateRegistry.getRegistry(address, 1099);
+        logger.info(String.format("Connecting to %s:%d/%s", address, REGISTRY_PORT, serviceName.getServiceName()));
+        final Registry registry = LocateRegistry.getRegistry(address, REGISTRY_PORT);
         // return registry.lookup(serviceName.getServiceName());
         return null;
     }
