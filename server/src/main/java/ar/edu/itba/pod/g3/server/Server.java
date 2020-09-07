@@ -41,7 +41,7 @@ public class Server {
 
 //        FPTPSystem fptpSystem = new FPTPSystem(Arrays.asList(v1,v2,v3));
         STARSystem starSystem = new STARSystem(Arrays.asList(v1,v2,v3));
-        starSystem.getResults();
+        System.out.println(starSystem.getResults());
 //        System.out.println(fptpSystem.getResults());
     }
 }

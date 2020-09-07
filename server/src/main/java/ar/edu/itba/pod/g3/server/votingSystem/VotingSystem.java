@@ -5,5 +5,5 @@ import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import java.util.Map;
 
 public interface VotingSystem {
-    Map<PoliticalParty, Double> getResults();
+    Object getResults();
 }
