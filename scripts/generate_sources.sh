@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ..
+
 echo "CLEAN INSTALL STEP"
 mvn clean install
 
