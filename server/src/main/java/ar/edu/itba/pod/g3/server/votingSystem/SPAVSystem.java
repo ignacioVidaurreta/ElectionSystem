@@ -2,6 +2,8 @@ package ar.edu.itba.pod.g3.server.votingSystem;
 
 import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.models.Vote;
+import ar.edu.itba.pod.g3.server.interfaces.VotingSystem;
+import ar.edu.itba.pod.g3.server.votingSystem.utils.DoubleRankingComparator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,7 +17,7 @@ public class SPAVSystem implements VotingSystem {
     }
 
     @Override
-    public SPAVSystemResults getResults() {
+    public ElectionResults getResults() {
         // Each round result is concatenated in the corresponding list
         List<PoliticalParty> winners = new LinkedList<>();
         List<Map<PoliticalParty, Double>> roundsRankings = new LinkedList<>();
@@ -42,7 +44,7 @@ public class SPAVSystem implements VotingSystem {
 
             // The unelected candidate who has the highest approval score is elected for the round
             winners.forEach(roundRanking::remove);
-            winners.add(Collections.max(roundRanking.entrySet(), new SPAVSystem.RankingComparator()).getKey());
+            winners.add(Collections.max(roundRanking.entrySet(), new DoubleRankingComparator()).getKey());
             roundsRankings.add(roundRanking);
         }
 
@@ -59,31 +61,11 @@ public class SPAVSystem implements VotingSystem {
         return i;
     }
 
-    public class SPAVSystemResults {
-        List<PoliticalParty> winners;
-        List<Map<PoliticalParty, Double>> roundsRankings;
+    public class SPAVSystemResults extends ElectionResults{
 
         public SPAVSystemResults(List<PoliticalParty> winners, List<Map<PoliticalParty, Double>> roundsRankings) {
-            this.winners = winners;
-            this.roundsRankings = roundsRankings;
+            super(winners, roundsRankings);
         }
 
-        @Override
-        public String toString() {
-            return "SPAVSystemResults{" +
-                    "winners=" + winners +
-                    ", roundsRankings=" + roundsRankings +
-                    '}';
-        }
-    }
-
-    private class RankingComparator implements Comparator<Map.Entry<PoliticalParty, Double>> {
-        @Override
-        public int compare(Map.Entry<PoliticalParty, Double> t1, Map.Entry<PoliticalParty, Double> t2) {
-            int diff = t1.getValue().compareTo(t2.getValue());
-            if(diff != 0)
-                return diff;
-            return -t1.getKey().compareTo(t2.getKey()); // Alphabetically, we want the min value of the Enum
-        }
     }
 }
