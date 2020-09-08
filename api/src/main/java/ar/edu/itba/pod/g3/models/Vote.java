@@ -6,20 +6,20 @@ import ar.edu.itba.pod.g3.enums.Province;
 import java.util.Map;
 
 public class Vote {
-    private Integer table;
+    private Integer booth;
     private Province province;
     private Map<PoliticalParty,Integer> ranking;
     private PoliticalParty fptpWinner;
 
-    public Vote(Integer table, Province province, Map<PoliticalParty,Integer> ranking, PoliticalParty fptpWinner) {
-        this.table = table;
+    public Vote(Integer booth, Province province, Map<PoliticalParty,Integer> ranking, PoliticalParty fptpWinner) {
+        this.booth = booth;
         this.province = province;
         this.ranking = ranking;
         this.fptpWinner = fptpWinner;
     }
 
     public Integer getTable() {
-        return table;
+        return booth;
     }
 
     public PoliticalParty getFptpWinner() {
