@@ -17,7 +17,9 @@ public class STARSystem implements VotingSystem {
 
     @Override
     public STARSystemResults getResults() {
-        Map<PoliticalParty, Integer> firstRound = this.votes.stream().flatMap(v->v.getRanking().entrySet().stream()).collect(Collectors.toMap(
+        Map<PoliticalParty, Integer> firstRound = this.votes.stream()
+                .flatMap(v->v.getRanking().entrySet().stream())
+                .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue,
                 Integer::sum));
@@ -27,13 +29,21 @@ public class STARSystem implements VotingSystem {
 
         PoliticalParty secondPlaceFirstRound = Collections.max(firstRound.entrySet(), new RankingComparator()).getKey();
 
-        List<Map<PoliticalParty, Integer>> secondRoundFilteredList = this.votes.stream().map(v->v.getRanking().entrySet().stream().filter(e -> e.getKey().equals(fistPlaceFirstRound) || e.getKey().equals(secondPlaceFirstRound)).collect(
-                Collectors.groupingBy(Map.Entry::getKey, Collectors.summingInt(Map.Entry::getValue)))).collect(Collectors.toList());
+        List<Map<PoliticalParty, Integer>> secondRoundFilteredList = this.votes.stream()
+                .map(v->v.getRanking()
+                        .entrySet()
+                        .stream()
+                        .filter(e -> e.getKey().equals(fistPlaceFirstRound) || e.getKey().equals(secondPlaceFirstRound))
+                        .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.summingInt(Map.Entry::getValue))))
+                .collect(Collectors.toList());
 
-        List<PoliticalParty> secondRoundVotesList = secondRoundFilteredList.stream().map(m -> Collections.max(m.entrySet(), new RankingComparator()).getKey()).collect(Collectors.toList());
+        List<PoliticalParty> secondRoundVotesList = secondRoundFilteredList.stream()
+                .map(m -> Collections.max(m.entrySet(), new RankingComparator()).getKey())
+                .collect(Collectors.toList());
 
         double size = secondRoundFilteredList.size();
-        Map<PoliticalParty, Double> finalRound = secondRoundVotesList.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.collectingAndThen(Collectors.counting(), c -> c/size)));
+        Map<PoliticalParty, Double> finalRound = secondRoundVotesList.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.collectingAndThen(Collectors.counting(), c -> c/size)));
 
         PoliticalParty winner = Collections.max(finalRound.entrySet(), new FinalRankingComparator()).getKey();
 
