@@ -6,7 +6,9 @@ package ar.edu.itba.pod.g3.enums;
 public enum ServiceName {
     MANAGEMENT ("managementService"),
     VOTE ("voteService"),
-    QUERY("queryService");
+    QUERY("queryService"),
+    FISCALIZATION("fiscalizationService"),
+    ;
 
     final String name;
     ServiceName(String name){
