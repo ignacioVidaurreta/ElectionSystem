@@ -1,12 +1,13 @@
 package ar.edu.itba.pod.g3.models;
 
+import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.interfaces.NotificationConsumer;
 
 public class Fiscal implements NotificationConsumer {
-    private final String id;
-    private final String party;
-    public Fiscal(String id, String party){
-        this.id = id;
+    private final int booth;
+    private final PoliticalParty party;
+    public Fiscal(int booth, PoliticalParty party){
+        this.booth = booth;
         this.party = party;
     }
     public void process(){
@@ -14,11 +15,11 @@ public class Fiscal implements NotificationConsumer {
         //throw new NotImplementedException();
     }
 
-    public String getParty() {
+    public PoliticalParty getParty() {
         return party;
     }
 
-    public String getId() {
-        return id;
+    public int getBooth() {
+        return booth;
     }
 }

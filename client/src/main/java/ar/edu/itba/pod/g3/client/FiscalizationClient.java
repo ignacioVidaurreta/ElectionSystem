@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.client;
 
 import ar.edu.itba.pod.g3.client.interfaces.ManagementClient;
+import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
 import ar.edu.itba.pod.g3.models.Fiscal;
 import org.slf4j.Logger;
@@ -34,9 +35,9 @@ public class FiscalizationClient extends Client {
                 && properties.containsKey("party");
     }
 
-    private static void createAndRegisterFiscal(FiscalizationService client, final String id, final String party) throws RemoteException{
-        Fiscal fiscal = new Fiscal(id, party);
+    private static void createAndRegisterFiscal(FiscalizationService client, final String booth, final String party) throws RemoteException{
+        Fiscal fiscal = new Fiscal(Integer.parseInt(booth), PoliticalParty.valueOf(party));
         //client.registerFiscal(fiscal);
-        System.out.println(String.format("Fiscal of %s registered on polling place %s", fiscal.getParty(), fiscal.getId()));
+        System.out.println(String.format("Fiscal of %s registered on polling place %d", fiscal.getParty(), fiscal.getBooth()));
     }
 }
