@@ -1,9 +1,7 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.enums.ServiceName;
-import ar.edu.itba.pod.g3.server.interfaces.AdministrationService;
-import ar.edu.itba.pod.g3.server.interfaces.FiscalizationService;
-import ar.edu.itba.pod.g3.server.model.Election;
+import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +21,8 @@ public class Server {
         final Registry registry = LocateRegistry.getRegistry();
 
         // Publish service
-        final Election election = new Election();
-        final ElectionService electionService = new ElectionService(election);
+        final ElectionManager electionManager = new ElectionManager();
+        final ElectionService electionService = new ElectionService(electionManager);
         final Remote remote = UnicastRemoteObject.exportObject(electionService, 0);
         registry.rebind(ServiceName.VOTE.getServiceName(), remote);
         registry.rebind(ServiceName.MANAGEMENT.getServiceName(), remote);
