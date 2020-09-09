@@ -21,8 +21,8 @@ public class VotingClient extends Client{
         Properties properties = System.getProperties();
         try {
             if(containsValidArguments(properties)){
-                VotingService client = (VotingService) getRemoteService(properties.getProperty("serverAddress"), VOTE);
-                executeAction(client, properties.getProperty("votesPath"));
+                //VotingService client = (VotingService) getRemoteService(properties.getProperty("serverAddress"), VOTE);
+                executeAction(null, properties.getProperty("votesPath"));
             }else {
                 System.out.println("Not found");
             }
@@ -39,10 +39,20 @@ public class VotingClient extends Client{
     private static void executeAction(VotingService client, String votePath){
         VoteParser parser = new VoteParser(votePath);
         parser.parseVotes();
+        parser.getParsedVotes().forEach(vote -> {
+            System.out.println(vote.getTable());
+            System.out.println(vote.getProvince());
+            System.out.println(vote.getRanking());
+            System.out.println(vote.getFptpWinner());
+
+            System.out.println("---------------------------");
+        });
+        /*
         try {
             client.submitVotes(parser.getParsedVotes());
         }catch (RemoteException ex){
             ex.printStackTrace();
         }
+         */
     }
 }
