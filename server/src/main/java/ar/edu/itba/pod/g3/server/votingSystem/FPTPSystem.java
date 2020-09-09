@@ -26,7 +26,7 @@ public class FPTPSystem implements VotingSystem {
         return new FPTPSystemResults(Collections.max(results.entrySet(), new DoubleRankingComparator()).getKey(), results);
     }
 
-    public class FPTPSystemResults extends ElectionResults{
+    public static class FPTPSystemResults extends ElectionResults{
 
         public FPTPSystemResults(PoliticalParty winner, Map<PoliticalParty, Double> results) {
             super(Collections.singletonList(winner), Collections.singletonList(results));
