@@ -15,7 +15,7 @@ import static ar.edu.itba.pod.g3.enums.ServiceName.MANAGEMENT;
 public class FiscalizationClient extends Client {
     private static Logger logger = LoggerFactory.getLogger(FiscalizationClient.class);
     public static void main(final String[] args){
-        logger.info("Initializing ElectionManagementClient...");
+        logger.info("Initializing FiscalizationClient...");
         Properties properties = System.getProperties();
         try {
             if(containsValidArguments(properties)){
