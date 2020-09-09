@@ -11,6 +11,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
+import static ar.edu.itba.pod.g3.enums.ServiceName.FISCALIZATION;
 import static ar.edu.itba.pod.g3.enums.ServiceName.MANAGEMENT;
 
 public class FiscalizationClient extends Client {
@@ -20,8 +21,8 @@ public class FiscalizationClient extends Client {
         Properties properties = System.getProperties();
         try {
             if(containsValidArguments(properties)){
-                FiscalizationService client = (FiscalizationService) getRemoteService(properties.getProperty("serverAddress"), MANAGEMENT);
-                createAndRegisterFiscal(client,properties.getProperty("id"), properties.getProperty("party"));
+                FiscalizationService remote = (FiscalizationService) getRemoteService(properties.getProperty("serverAddress"), FISCALIZATION);
+                createAndRegisterFiscal(remote,properties.getProperty("id"), properties.getProperty("party"));
             }else {
                 logger.error("Invalid arguments. -Daction and -DserverAddress arguments must be present");
             }
@@ -35,9 +36,9 @@ public class FiscalizationClient extends Client {
                 && properties.containsKey("party");
     }
 
-    private static void createAndRegisterFiscal(FiscalizationService client, final String booth, final String party) throws RemoteException{
+    private static void createAndRegisterFiscal(FiscalizationService remote, final String booth, final String party) throws RemoteException{
         Fiscal fiscal = new Fiscal(Integer.parseInt(booth), PoliticalParty.valueOf(party));
-        //client.registerFiscal(fiscal);
+        //remote.registerFiscal(fiscal);
         System.out.println(String.format("Fiscal of %s registered on polling place %d", fiscal.getParty(), fiscal.getBooth()));
     }
 }

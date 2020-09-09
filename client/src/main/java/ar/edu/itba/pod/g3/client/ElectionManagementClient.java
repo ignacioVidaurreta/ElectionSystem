@@ -21,8 +21,8 @@ public class ElectionManagementClient extends Client{
         Properties properties = System.getProperties();
         try {
             if(properties.containsKey("action") && properties.containsKey("serverAddress")){
-                ManagementClient client = (ManagementClient) getRemoteService(properties.getProperty("serverAddress"), MANAGEMENT);
-                executeAction(client, properties.getProperty("action"));
+                ManagementClient remote = (ManagementClient) getRemoteService(properties.getProperty("serverAddress"), MANAGEMENT);
+                executeAction(remote, properties.getProperty("action"));
             }else {
                 logger.error("Invalid arguments. -Daction and -DserverAddress arguments must be present");
             }
@@ -35,17 +35,17 @@ public class ElectionManagementClient extends Client{
         switch (action){
             case "open":
                 logger.info("Opening elections");
-                //client.open();
+                //remote.open();
                 System.out.println("ELECTION STARTED");
                 break;
             case "close":
                 logger.info("Closing elections");
-                //client.close();
+                //remote.close();
                 System.out.println("ELECTION CLOSED");
                 break;
             case "state":
                 logger.info("Querying for election state");
-                //client.getState();
+                //remote.getState();
                 break;
             default:
                 logger.error("Unknown action");
