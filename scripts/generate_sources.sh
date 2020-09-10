@@ -19,6 +19,7 @@ tar -xvf ${SERVER_TAR} -C server/target
 
 # Give execution permission to user
 echo "PERMISSIONS STEP"
+
 # Client permissions
 CLIENT_BASE_PATH="client/target/election-system-client-${VERSION}"
 chmod u+x ${CLIENT_BASE_PATH}/run-management.sh
