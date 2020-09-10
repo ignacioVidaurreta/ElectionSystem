@@ -4,5 +4,5 @@ import ar.edu.itba.pod.g3.models.Vote;
 
 @FunctionalInterface
 public interface NotificationConsumer {
-    void process(Vote vote);
+    void notify(Vote vote);
 }

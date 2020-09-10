@@ -12,7 +12,7 @@ public class Fiscal implements NotificationConsumer {
     }
 
     @Override
-    public void process(Vote vote) {
+    public void notify(Vote vote) {
         //TODO implement
     }
 

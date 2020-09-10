@@ -62,7 +62,7 @@ public class ElectionManager {
                 return;
             }
             for (Fiscal fiscal : fiscals) {
-                fiscal.process(vote);
+                fiscal.notify(vote);
             }
         }
     }
