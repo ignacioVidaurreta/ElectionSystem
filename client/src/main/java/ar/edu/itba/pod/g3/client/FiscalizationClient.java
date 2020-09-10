@@ -1,8 +1,8 @@
 package ar.edu.itba.pod.g3.client;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
-import ar.edu.itba.pod.g3.models.Fiscal;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.interfaces.FiscalizationService;
+import ar.edu.itba.pod.g3.api.models.Fiscal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
-import static ar.edu.itba.pod.g3.enums.ServiceName.FISCALIZATION;
+import static ar.edu.itba.pod.g3.api.enums.ServiceName.FISCALIZATION;
 
 public class FiscalizationClient extends Client {
     private static Logger logger = LoggerFactory.getLogger(FiscalizationClient.class);

@@ -1,9 +1,8 @@
 package ar.edu.itba.pod.g3.client.utils;
 
-import ar.edu.itba.pod.g3.client.VotingClient;
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.enums.Province;
-import ar.edu.itba.pod.g3.models.Vote;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.enums.Province;
+import ar.edu.itba.pod.g3.api.models.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

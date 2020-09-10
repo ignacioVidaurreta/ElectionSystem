@@ -1,13 +1,13 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
-import ar.edu.itba.pod.g3.enums.ElectionState;
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.enums.Province;
-import ar.edu.itba.pod.g3.enums.QueryType;
-import ar.edu.itba.pod.g3.models.ElectionException;
-import ar.edu.itba.pod.g3.models.Fiscal;
-import ar.edu.itba.pod.g3.models.QueryDescriptor;
-import ar.edu.itba.pod.g3.models.Vote;
+import ar.edu.itba.pod.g3.api.enums.ElectionState;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.enums.Province;
+import ar.edu.itba.pod.g3.api.enums.QueryType;
+import ar.edu.itba.pod.g3.api.models.ElectionException;
+import ar.edu.itba.pod.g3.api.models.Fiscal;
+import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
+import ar.edu.itba.pod.g3.api.models.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,14 +76,16 @@ public class ElectionManager {
                 throw new ElectionException("Cannot add votes to an election that has not started");
             case OPEN:
                 votes.addAll(newVotes);
+                System.out.println(newVotes);
+                newVotes.forEach((System.out::println));
                 emitNotifications(newVotes);
-                writeLock.unlock();
+                break;
             case CLOSED:
                 writeLock.unlock();
                 throw new ElectionException("Cannot add votes to an election that has been closed");
         }
         writeLock.unlock();
-        return false;
+        return true;
     }
 
     public boolean addFiscal(Fiscal fiscal) {

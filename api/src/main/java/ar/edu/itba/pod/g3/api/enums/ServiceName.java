@@ -1,4 +1,4 @@
-package ar.edu.itba.pod.g3.enums;
+package ar.edu.itba.pod.g3.api.enums;
 
 /**
  * enum that determines which remote service to call from the Server.

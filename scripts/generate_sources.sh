@@ -25,6 +25,7 @@ CLIENT_BASE_PATH="client/target/election-system-client-${VERSION}"
 chmod u+x ${CLIENT_BASE_PATH}/run-management.sh
 chmod u+x ${CLIENT_BASE_PATH}/run-vote.sh
 chmod u+x ${CLIENT_BASE_PATH}/run-fiscal.sh
+chmod u+x ${CLIENT_BASE_PATH}/run-query.sh
 
 #Server permissions
 SERVER_BASE_PATH="server/target/election-system-server-${VERSION}"

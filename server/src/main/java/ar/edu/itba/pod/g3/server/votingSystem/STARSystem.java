@@ -1,7 +1,7 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.models.Vote;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.interfaces.VotingSystem;
 import ar.edu.itba.pod.g3.server.votingSystem.utils.DoubleRankingComparator;
 import ar.edu.itba.pod.g3.server.votingSystem.utils.IntegerRankingComparator;

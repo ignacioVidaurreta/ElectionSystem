@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 
 import java.util.List;
 import java.util.Map;

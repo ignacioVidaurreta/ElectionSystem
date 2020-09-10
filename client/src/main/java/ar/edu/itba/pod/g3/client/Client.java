@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.g3.client;
 
-import ar.edu.itba.pod.g3.enums.ServiceName;
+import ar.edu.itba.pod.g3.api.enums.ServiceName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

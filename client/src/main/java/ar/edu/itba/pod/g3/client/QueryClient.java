@@ -1,17 +1,16 @@
 package ar.edu.itba.pod.g3.client;
 
-import static ar.edu.itba.pod.g3.enums.ServiceName.QUERY;
+import static ar.edu.itba.pod.g3.api.enums.ServiceName.QUERY;
 
-import ar.edu.itba.pod.g3.enums.QueryType;
-import ar.edu.itba.pod.g3.interfaces.QueryService;
-import ar.edu.itba.pod.g3.models.QueryDescriptor;
+import ar.edu.itba.pod.g3.api.enums.QueryType;
+import ar.edu.itba.pod.g3.api.interfaces.QueryService;
+import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
@@ -26,9 +25,8 @@ public class QueryClient {
             if(containsValidArguments(properties)){
                 QueryService client = (QueryService) getRemoteService(properties.getProperty("serverAddress"), QUERY);
                 QueryDescriptor descriptor = generateQueryDescriptor(properties);
-                //String result = client.executeQuery(descriptor);
-                String result =
-                        "Percentage;Party \n66.67%;TURTLE\n33.33%;LYNX";
+                String result = client.executeQuery(descriptor);
+
                 writeToFile(result, properties.getProperty("outPath"));
 
             }else {
@@ -39,6 +37,9 @@ public class QueryClient {
             rex.printStackTrace();
         }catch (IOException ex) {
             logger.error(String.format("(%s): IOException occurred", ex));
+            ex.printStackTrace();
+        }catch (Exception ex){
+            logger.error(String.format("(%s): Exception occurred", ex));
             ex.printStackTrace();
         }
     }

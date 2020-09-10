@@ -1,7 +1,7 @@
 package ar.edu.itba.pod.g3.server;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.models.Vote;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionResults;
 import ar.edu.itba.pod.g3.server.votingSystem.FPTPSystem;
 import ar.edu.itba.pod.g3.server.votingSystem.SPAVSystem;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
-import static ar.edu.itba.pod.g3.enums.PoliticalParty.*;
-import static ar.edu.itba.pod.g3.enums.Province.JUNGLE;
-import static ar.edu.itba.pod.g3.enums.Province.SAVANNAH;
+import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.*;
+import static ar.edu.itba.pod.g3.api.enums.Province.JUNGLE;
+import static ar.edu.itba.pod.g3.api.enums.Province.SAVANNAH;
 
 public class VotingSystemsTest {
 

@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.g3.client;
 
-import ar.edu.itba.pod.g3.enums.ElectionState;
-import ar.edu.itba.pod.g3.interfaces.ManagementService;
+import ar.edu.itba.pod.g3.api.interfaces.ManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
-import static ar.edu.itba.pod.g3.enums.ServiceName.MANAGEMENT;
+import static ar.edu.itba.pod.g3.api.enums.ServiceName.MANAGEMENT;
 
 
 /**
@@ -47,7 +46,7 @@ public class ElectionManagementClient extends Client{
                 break;
             case "state":
                 logger.info("Querying for election state");
-                remote.consultElectionState();
+                System.out.println(remote.consultElectionState());
                 break;
             default:
                 logger.error("Unknown action");

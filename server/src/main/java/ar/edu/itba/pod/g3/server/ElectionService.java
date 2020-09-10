@@ -1,13 +1,13 @@
 package ar.edu.itba.pod.g3.server;
 
-import ar.edu.itba.pod.g3.enums.ElectionState;
-import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
-import ar.edu.itba.pod.g3.interfaces.ManagementService;
-import ar.edu.itba.pod.g3.models.Fiscal;
-import ar.edu.itba.pod.g3.models.QueryDescriptor;
-import ar.edu.itba.pod.g3.models.Vote;
-import ar.edu.itba.pod.g3.server.interfaces.QueryService;
-import ar.edu.itba.pod.g3.server.interfaces.VotingService;
+import ar.edu.itba.pod.g3.api.enums.ElectionState;
+import ar.edu.itba.pod.g3.api.interfaces.FiscalizationService;
+import ar.edu.itba.pod.g3.api.interfaces.ManagementService;
+import ar.edu.itba.pod.g3.api.interfaces.QueryService;
+import ar.edu.itba.pod.g3.api.interfaces.VotingService;
+import ar.edu.itba.pod.g3.api.models.Fiscal;
+import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
+import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class ElectionService implements ManagementService, VotingService, QueryS
      **************************** Voting Service ****************************
      ************************************************************************/
     @Override
-    public boolean emitVote(Collection<Vote> vote) throws Exception {
+    public boolean emitVotes(Collection<Vote> vote) throws Exception {
         return electionManager.addVotes(vote);
     }
 

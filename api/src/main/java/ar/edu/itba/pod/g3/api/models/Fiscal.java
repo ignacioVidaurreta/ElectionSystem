@@ -1,7 +1,7 @@
-package ar.edu.itba.pod.g3.models;
+package ar.edu.itba.pod.g3.api.models;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.interfaces.NotificationConsumer;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.interfaces.NotificationConsumer;
 
 public class Fiscal implements NotificationConsumer {
     private final int booth;
