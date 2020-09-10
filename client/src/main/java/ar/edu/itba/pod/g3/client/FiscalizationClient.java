@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.g3.client;
 
-import ar.edu.itba.pod.g3.client.interfaces.ManagementClient;
 import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
 import ar.edu.itba.pod.g3.models.Fiscal;
@@ -12,7 +11,6 @@ import java.rmi.RemoteException;
 import java.util.Properties;
 
 import static ar.edu.itba.pod.g3.enums.ServiceName.FISCALIZATION;
-import static ar.edu.itba.pod.g3.enums.ServiceName.MANAGEMENT;
 
 public class FiscalizationClient extends Client {
     private static Logger logger = LoggerFactory.getLogger(FiscalizationClient.class);

@@ -13,12 +13,12 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
-
+    private static final int REGISTRY_PORT = 1099;
     public static void main(String[] args) throws RemoteException {
         logger.info("election-system Server Starting ...");
 
         // Create registry
-        final Registry registry = LocateRegistry.getRegistry();
+        final Registry registry = LocateRegistry.getRegistry(REGISTRY_PORT);
 
         // Publish service
         final ElectionManager electionManager = new ElectionManager();

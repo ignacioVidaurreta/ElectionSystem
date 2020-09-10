@@ -22,8 +22,7 @@ public abstract class Client {
     static Remote getRemoteService(final String address, final ServiceName serviceName) throws NotBoundException, RemoteException{
         logger.info(String.format("Connecting to %s:%d/%s", address, REGISTRY_PORT, serviceName.getServiceName()));
         final Registry registry = LocateRegistry.getRegistry(address, REGISTRY_PORT);
-        // return registry.lookup(serviceName.getServiceName());
-        return null;
+        return registry.lookup(serviceName.getServiceName());
     }
 
     /* protected */ static boolean containsValidArguments(Properties properties){

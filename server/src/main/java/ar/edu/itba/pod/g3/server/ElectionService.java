@@ -2,10 +2,10 @@ package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.enums.ElectionState;
 import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
+import ar.edu.itba.pod.g3.interfaces.ManagementService;
 import ar.edu.itba.pod.g3.models.Fiscal;
 import ar.edu.itba.pod.g3.models.QueryDescriptor;
 import ar.edu.itba.pod.g3.models.Vote;
-import ar.edu.itba.pod.g3.server.interfaces.AdministrationService;
 import ar.edu.itba.pod.g3.server.interfaces.QueryService;
 import ar.edu.itba.pod.g3.server.interfaces.VotingService;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
@@ -18,7 +18,7 @@ import java.util.Collection;
 /**
  * Service implementation for all service types
  */
-public class ElectionService implements AdministrationService, VotingService, QueryService, FiscalizationService {
+public class ElectionService implements ManagementService, VotingService, QueryService, FiscalizationService {
     private static final Logger logger = LoggerFactory.getLogger(ElectionService.class);
 
     private final ElectionManager electionManager;
