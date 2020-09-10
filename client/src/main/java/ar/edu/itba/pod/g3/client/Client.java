@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.g3.client;
 
-import ar.edu.itba.pod.g3.client.interfaces.ManagementClient;
 import ar.edu.itba.pod.g3.enums.ServiceName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,7 @@ public abstract class Client {
         // return registry.lookup(serviceName.getServiceName());
         return null;
     }
+
     /* protected */ static boolean containsValidArguments(Properties properties){
         return properties.containsKey("serverAddress");
     }
