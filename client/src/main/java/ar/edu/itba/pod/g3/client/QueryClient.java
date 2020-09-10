@@ -35,10 +35,10 @@ public class QueryClient {
                 System.out.println("Not found");
             }
         }catch (RemoteException | NotBoundException rex){
-            logger.error("Remote Exception Occurred");
+            logger.error(String.format("(%s): Remote Exception Occurred", rex));
             rex.printStackTrace();
         }catch (IOException ex) {
-            logger.error("IOException occurred");
+            logger.error(String.format("(%s): IOException occurred", ex));
             ex.printStackTrace();
         }
     }
