@@ -76,8 +76,8 @@ public class ElectionManager {
                 throw new ElectionException("Cannot add votes to an election that has not started");
             case OPEN:
                 votes.addAll(newVotes);
-                writeLock.unlock();
                 emitNotifications(newVotes);
+                writeLock.unlock();
             case CLOSED:
                 writeLock.unlock();
                 throw new ElectionException("Cannot add votes to an election that has been closed");
