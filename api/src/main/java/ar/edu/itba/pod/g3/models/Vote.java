@@ -18,7 +18,7 @@ public class Vote {
         this.fptpWinner = fptpWinner;
     }
 
-    public Integer getTable() {
+    public Integer getBooth() {
         return booth;
     }
 

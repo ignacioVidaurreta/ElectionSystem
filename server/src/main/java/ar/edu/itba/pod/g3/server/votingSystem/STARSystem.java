@@ -62,7 +62,7 @@ public class STARSystem implements VotingSystem {
         return new STARSystemResults(firstRound, finalRound, winner);
     }
 
-    public class STARSystemResults extends ElectionResults{
+    public static class STARSystemResults extends ElectionResults{
 
         public STARSystemResults(Map<PoliticalParty, Double> firstRound, Map<PoliticalParty, Double> finalRound, PoliticalParty winner) {
             super(Collections.singletonList(winner), Arrays.asList(firstRound,finalRound));

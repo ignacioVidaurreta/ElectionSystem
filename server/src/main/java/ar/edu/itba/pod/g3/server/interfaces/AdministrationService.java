@@ -2,12 +2,15 @@ package ar.edu.itba.pod.g3.server.interfaces;
 
 import ar.edu.itba.pod.g3.enums.ElectionState;
 
-public interface AdministrationService {
-    boolean openElection() throws Exception;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    boolean closeElection() throws Exception;
+public interface AdministrationService extends Remote {
+    boolean openElection() throws RemoteException;
 
-    ElectionState consultElectionState();
+    boolean closeElection() throws RemoteException;
+
+    ElectionState consultElectionState() throws RemoteException ;
 
 
 }

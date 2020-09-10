@@ -61,7 +61,7 @@ public class SPAVSystem implements VotingSystem {
         return i;
     }
 
-    public class SPAVSystemResults extends ElectionResults{
+    public static class SPAVSystemResults extends ElectionResults{
 
         public SPAVSystemResults(List<PoliticalParty> winners, List<Map<PoliticalParty, Double>> roundsRankings) {
             super(winners, roundsRankings);
