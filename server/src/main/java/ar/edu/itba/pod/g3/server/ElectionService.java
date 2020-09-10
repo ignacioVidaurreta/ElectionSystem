@@ -1,11 +1,11 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.enums.ElectionState;
-import ar.edu.itba.pod.g3.interfaces.NotificationConsumer;
+import ar.edu.itba.pod.g3.interfaces.FiscalizationService;
+import ar.edu.itba.pod.g3.models.Fiscal;
 import ar.edu.itba.pod.g3.models.QueryDescriptor;
 import ar.edu.itba.pod.g3.models.Vote;
 import ar.edu.itba.pod.g3.server.interfaces.AdministrationService;
-import ar.edu.itba.pod.g3.server.interfaces.FiscalizationService;
 import ar.edu.itba.pod.g3.server.interfaces.QueryService;
 import ar.edu.itba.pod.g3.server.interfaces.VotingService;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
@@ -66,7 +66,7 @@ public class ElectionService implements AdministrationService, VotingService, Qu
      ************************* Fiscalization Service ************************
      ************************************************************************/
     @Override
-    public boolean registerFiscal(NotificationConsumer notificationConsumer) throws Exception {
-        return electionManager.addNotificationConsumer(notificationConsumer);
+    public boolean registerFiscal(Fiscal fiscal) throws Exception {
+        return electionManager.addFiscal(fiscal);
     }
 }

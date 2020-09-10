@@ -1,18 +1,17 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
 import ar.edu.itba.pod.g3.enums.ElectionState;
+import ar.edu.itba.pod.g3.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.enums.Province;
 import ar.edu.itba.pod.g3.enums.QueryType;
-import ar.edu.itba.pod.g3.interfaces.NotificationConsumer;
 import ar.edu.itba.pod.g3.models.ElectionException;
+import ar.edu.itba.pod.g3.models.Fiscal;
 import ar.edu.itba.pod.g3.models.QueryDescriptor;
 import ar.edu.itba.pod.g3.models.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,14 +28,21 @@ public class ElectionManager {
     ElectionState electionState;
 
     private final List<Vote> votes = new ArrayList<>();
-    private final List<NotificationConsumer> notificationConsumers = new ArrayList<>();
+    private final Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap = new EnumMap<>(PoliticalParty.class);
+    private final Object[] fiscalMapLocks = new Object[7];
 
+    private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap) {
+        for(PoliticalParty politicalParty: PoliticalParty.values()) {
+            fiscalMap.put(politicalParty, new HashMap<>());
+        }
+    }
 
     public ElectionManager() {
         // Create a reentrant RWlock with fairness true
         ReadWriteLock rwLock = new ReentrantReadWriteLock(true);
         readlock = rwLock.readLock();
         writeLock = rwLock.writeLock();
+        populateFiscalMap(fiscalMap);
     }
 
     public boolean setElectionState(ElectionState state) {
@@ -50,7 +56,14 @@ public class ElectionManager {
 
     private void emitNotifications(Collection<Vote> newVotes) {
         for(Vote vote: newVotes) {
-            notificationConsumers.forEach(v -> v.process(vote));
+            Map<Integer, List<Fiscal>> partyMap = fiscalMap.get(vote.getFptpWinner());
+            List<Fiscal> fiscals = partyMap.get(vote.getBooth());
+            if (fiscals == null) {
+                return;
+            }
+            for (Fiscal fiscal : fiscals) {
+                fiscal.process(vote);
+            }
         }
     }
 
@@ -73,9 +86,18 @@ public class ElectionManager {
         return false;
     }
 
-    public boolean addNotificationConsumer(NotificationConsumer notificationConsumer) {
-        synchronized (notificationConsumers) {
-            return notificationConsumers.add(notificationConsumer);
+    public boolean addFiscal(Fiscal fiscal) {
+        synchronized (fiscalMapLocks[fiscal.getParty().ordinal()]) {
+
+            Map<Integer, List<Fiscal>> partyMap = fiscalMap.get(fiscal.getParty());
+            if (partyMap.containsKey(fiscal.getBooth())) {
+                List<Fiscal> fiscals = partyMap.get(fiscal.getBooth());
+                fiscals.add(fiscal);
+            } else {
+                List<Fiscal> fiscals = Collections.singletonList(fiscal);
+                partyMap.put(fiscal.getBooth(), fiscals);
+            }
+            return true;
         }
     }
 

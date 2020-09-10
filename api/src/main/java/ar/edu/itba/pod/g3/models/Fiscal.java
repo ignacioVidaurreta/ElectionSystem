@@ -10,9 +10,10 @@ public class Fiscal implements NotificationConsumer {
         this.booth = booth;
         this.party = party;
     }
-    public void process(){
-        //TODO: Implement
-        //throw new NotImplementedException();
+
+    @Override
+    public void process(Vote vote) {
+        //TODO implement
     }
 
     public PoliticalParty getParty() {
