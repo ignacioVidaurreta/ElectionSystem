@@ -1,8 +1,10 @@
-package ar.edu.itba.pod.g3.models;
+package ar.edu.itba.pod.g3.api.models;
 
-import ar.edu.itba.pod.g3.enums.QueryType;
+import ar.edu.itba.pod.g3.api.enums.QueryType;
 
-public class QueryDescriptor {
+import java.io.Serializable;
+
+public class QueryDescriptor implements Serializable {
     final private String id;
     final private QueryType type;
 

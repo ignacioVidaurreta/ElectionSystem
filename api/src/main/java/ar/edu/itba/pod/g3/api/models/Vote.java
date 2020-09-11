@@ -1,11 +1,12 @@
-package ar.edu.itba.pod.g3.models;
+package ar.edu.itba.pod.g3.api.models;
 
-import ar.edu.itba.pod.g3.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.enums.Province;
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.enums.Province;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Vote {
+public class Vote implements Serializable {
     private Integer booth;
     private Province province;
     private Map<PoliticalParty,Integer> ranking;
@@ -32,5 +33,15 @@ public class Vote {
 
     public Map<PoliticalParty, Integer> getRanking() {
         return ranking;
+    }
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "booth=" + booth +
+                ", province=" + province +
+                ", ranking=" + ranking +
+                ", fptpWinner=" + fptpWinner +
+                '}';
     }
 }

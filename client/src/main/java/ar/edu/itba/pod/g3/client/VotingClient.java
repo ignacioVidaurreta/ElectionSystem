@@ -1,11 +1,14 @@
 package ar.edu.itba.pod.g3.client;
 
 import ar.edu.itba.pod.g3.client.utils.VoteParser;
-import ar.edu.itba.pod.g3.interfaces.VotingService;
+import ar.edu.itba.pod.g3.api.interfaces.VotingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.RemoteException;
 import java.util.Properties;
+
+import static ar.edu.itba.pod.g3.api.enums.ServiceName.VOTE;
 
 /**
  * Client that runs the voting client.
@@ -18,8 +21,8 @@ public class VotingClient extends Client{
         Properties properties = System.getProperties();
         try {
             if(containsValidArguments(properties)){
-                //VotingService client = (VotingService) getRemoteService(properties.getProperty("serverAddress"), VOTE);
-                executeAction(null, properties.getProperty("votesPath"));
+                VotingService client = (VotingService) getRemoteService(properties.getProperty("serverAddress"), VOTE);
+                executeAction(client, properties.getProperty("votesPath"));
             }else {
                 System.out.println("Not found");
             }
@@ -44,12 +47,12 @@ public class VotingClient extends Client{
 
             System.out.println("---------------------------");
         });
-        /*
+
         try {
-            client.submitVotes(parser.getParsedVotes());
-        }catch (RemoteException ex){
+            client.emitVotes(parser.getParsedVotes());
+        }catch (Exception ex){
             ex.printStackTrace();
         }
-         */
+
     }
 }
