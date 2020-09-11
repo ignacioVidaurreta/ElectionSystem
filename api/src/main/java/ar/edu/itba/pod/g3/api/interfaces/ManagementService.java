@@ -12,5 +12,4 @@ public interface ManagementService extends Remote {
 
     ElectionState consultElectionState() throws RemoteException;
 
-    // ElectionState executeAction(String action) throws RemoteException;
 }
