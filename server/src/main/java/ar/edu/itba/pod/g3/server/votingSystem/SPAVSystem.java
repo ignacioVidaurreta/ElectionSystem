@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.interfaces.VotingSystem;
 import ar.edu.itba.pod.g3.server.votingSystem.utils.DoubleRankingComparator;
@@ -17,7 +18,11 @@ public class SPAVSystem implements VotingSystem {
     }
 
     @Override
-    public ElectionResults getResults() {
+    public ElectionResults getResults() throws NoVotesException {
+        if (this.votes.isEmpty()) {
+            throw new NoVotesException();
+        }
+
         // Each round result is concatenated in the corresponding list
         List<PoliticalParty> winners = new LinkedList<>();
         List<Map<PoliticalParty, Double>> roundsRankings = new LinkedList<>();

@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.interfaces.VotingSystem;
 import ar.edu.itba.pod.g3.server.votingSystem.utils.DoubleRankingComparator;
@@ -19,8 +20,11 @@ public class FPTPSystem implements VotingSystem {
     }
 
     @Override
-    public ElectionResults getResults() {
+    public ElectionResults getResults() throws NoVotesException {
         double size = this.votes.size();
+        if (size == 0) {
+            throw new NoVotesException();
+        }
         Map<PoliticalParty, Double> results = this.votes.stream().collect(Collectors.groupingBy(Vote::getFptpWinner, Collectors.collectingAndThen(Collectors.counting(), c -> c/size)));
         return new FPTPSystemResults(Collections.max(results.entrySet(), new DoubleRankingComparator()).getKey(), results);
     }

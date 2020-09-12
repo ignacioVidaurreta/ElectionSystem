@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.server.votingSystem;
 
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.interfaces.VotingSystem;
 import ar.edu.itba.pod.g3.server.votingSystem.utils.DoubleRankingComparator;
@@ -19,7 +20,11 @@ public class STARSystem implements VotingSystem {
     }
 
     @Override
-    public ElectionResults getResults() {
+    public ElectionResults getResults() throws NoVotesException {
+        if (this.votes.isEmpty()) {
+            throw new NoVotesException();
+        }
+
         // Scoring round
         // Adding all scores for all candidates
         Map<PoliticalParty, Double> firstRound = this.votes.stream()

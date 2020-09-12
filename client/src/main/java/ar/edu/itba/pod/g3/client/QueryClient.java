@@ -4,6 +4,8 @@ import static ar.edu.itba.pod.g3.api.enums.ServiceName.QUERY;
 
 import ar.edu.itba.pod.g3.api.enums.QueryType;
 import ar.edu.itba.pod.g3.api.interfaces.QueryService;
+import ar.edu.itba.pod.g3.api.models.ElectionException;
+import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import static ar.edu.itba.pod.g3.client.Client.getRemoteService;
@@ -22,23 +25,25 @@ public class QueryClient {
         logger.info("Initializing QueryClient...");
         Properties properties = System.getProperties();
         try {
-            if(containsValidArguments(properties)){
+            if (containsValidArguments(properties)) {
                 QueryService client = (QueryService) getRemoteService(properties.getProperty("serverAddress"), QUERY);
                 QueryDescriptor descriptor = generateQueryDescriptor(properties);
                 String result = client.executeQuery(descriptor);
 
                 writeToFile(result, properties.getProperty("outPath"));
 
-            }else {
+            } else {
                 System.out.println("Not found");
             }
-        }catch (RemoteException | NotBoundException rex){
+        } catch (RemoteException | NotBoundException rex) {
             logger.error(String.format("(%s): Remote Exception Occurred", rex));
             rex.printStackTrace();
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             logger.error(String.format("(%s): IOException occurred", ex));
             ex.printStackTrace();
-        }catch (Exception ex){
+        } catch (NoVotesException noVotesException) {
+            System.out.println("No votes");
+        } catch (Exception ex) {
             logger.error(String.format("(%s): Exception occurred", ex));
             ex.printStackTrace();
         }

@@ -22,7 +22,7 @@ public class ElectionManager {
 
 
     private static final Logger logger = LoggerFactory.getLogger(ElectionManager.class);
-    private final Lock readlock;
+    private final Lock readLock;
     private final Lock writeLock;
 
     ElectionState electionState;
@@ -40,7 +40,7 @@ public class ElectionManager {
     public ElectionManager() {
         // Create a reentrant RWlock with fairness true
         ReadWriteLock rwLock = new ReentrantReadWriteLock(true);
-        readlock = rwLock.readLock();
+        readLock = rwLock.readLock();
         writeLock = rwLock.writeLock();
         populateFiscalMap(fiscalMap);
     }
@@ -104,7 +104,7 @@ public class ElectionManager {
     }
 
     public String queryElection(QueryDescriptor descriptor) throws Exception {
-        readlock.lock();
+        readLock.lock();
         QueryType queryType = descriptor.getType();
         String id = descriptor.getId();
         ElectionResults electionResults = null;
@@ -115,7 +115,7 @@ public class ElectionManager {
                     electionResults = queryBooth(boothId);
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
                 break;
@@ -125,7 +125,7 @@ public class ElectionManager {
                     electionResults = queryProvince(province);
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
                 break;
@@ -134,11 +134,11 @@ public class ElectionManager {
                     electionResults = queryNational();
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
         }
-        readlock.unlock();
+        readLock.unlock();
         return electionResults.toString();
     }
 
