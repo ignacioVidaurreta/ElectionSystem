@@ -6,9 +6,9 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ManagementService extends Remote {
-    boolean openElection() throws RemoteException;
+    boolean openElection() throws RemoteException, IllegalStateException;
 
-    boolean closeElection() throws RemoteException;
+    boolean closeElection() throws RemoteException, IllegalStateException;
 
     ElectionState consultElectionState() throws RemoteException;
 

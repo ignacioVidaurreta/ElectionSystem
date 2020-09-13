@@ -32,12 +32,12 @@ public class ElectionService implements ManagementService, VotingService, QueryS
      ************************ Administration Service ************************
      ************************************************************************/
     @Override
-    public boolean openElection() throws RemoteException {
+    public boolean openElection() throws RemoteException, IllegalStateException {
         return electionManager.setElectionState(ElectionState.OPEN);
     }
 
     @Override
-    public boolean closeElection() throws RemoteException {
+    public boolean closeElection() throws RemoteException, IllegalStateException {
         return electionManager.setElectionState(ElectionState.CLOSED);
     }
 
