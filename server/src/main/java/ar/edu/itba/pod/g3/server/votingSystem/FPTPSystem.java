@@ -23,7 +23,7 @@ public class FPTPSystem implements VotingSystem {
     public ElectionResults getResults() throws NoVotesException {
         double size = this.votes.size();
         if (size == 0) {
-            throw new NoVotesException();
+            throw new NoVotesException("FPTP");
         }
         Map<PoliticalParty, Double> results = this.votes.stream().collect(Collectors.groupingBy(Vote::getFptpWinner, Collectors.collectingAndThen(Collectors.counting(), c -> c/size)));
         return new FPTPSystemResults(Collections.max(results.entrySet(), new DoubleRankingComparator()).getKey(), results);

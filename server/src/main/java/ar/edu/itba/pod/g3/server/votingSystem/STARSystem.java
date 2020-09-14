@@ -22,7 +22,7 @@ public class STARSystem implements VotingSystem {
     @Override
     public ElectionResults getResults() throws NoVotesException {
         if (this.votes.isEmpty()) {
-            throw new NoVotesException();
+            throw new NoVotesException("STAR");
         }
 
         // Scoring round

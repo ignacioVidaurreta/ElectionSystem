@@ -39,9 +39,7 @@ public class ElectionManagerTest {
         Vote v1 = new Vote(1000, JUNGLE, ranking1, TIGER);
         shortVotesCollection.add(v1);
 
-        // todo: fix mocking of object grab for lock
-        // try entering concurrently
-        // Mockito.when(fiscalMapLocks[fiscal.getParty().ordinal()]).thenReturn(new Object());
+        // todo: try entering concurrently to locks
     }
 
     /* Administration */

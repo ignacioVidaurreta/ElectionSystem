@@ -20,7 +20,7 @@ public class SPAVSystem implements VotingSystem {
     @Override
     public ElectionResults getResults() throws NoVotesException {
         if (this.votes.isEmpty()) {
-            throw new NoVotesException();
+            throw new NoVotesException("SPAV");
         }
 
         // Each round result is concatenated in the corresponding list
