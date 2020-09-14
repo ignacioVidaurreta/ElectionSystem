@@ -2,10 +2,8 @@ package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.ElectionState;
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
-import ar.edu.itba.pod.g3.api.models.ElectionException;
-import ar.edu.itba.pod.g3.api.models.Fiscal;
-import ar.edu.itba.pod.g3.api.models.NoVotesException;
-import ar.edu.itba.pod.g3.api.models.Vote;
+import ar.edu.itba.pod.g3.api.enums.QueryType;
+import ar.edu.itba.pod.g3.api.models.*;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,20 +11,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.*;
 import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.TIGER;
 import static ar.edu.itba.pod.g3.api.enums.Province.JUNGLE;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ElectionManagerTest {
-    public static final int BOOTH = 1000;
+    public static final int BOOTH_NUMBER = 1000;
+    public static final String BOOTH_STRING = "1000";
     public static final PoliticalParty POLITICAL_PARTY = LYNX;
 
     @InjectMocks
@@ -45,6 +40,7 @@ public class ElectionManagerTest {
         shortVotesCollection.add(v1);
 
         // todo: fix mocking of object grab for lock
+        // try entering concurrently
         // Mockito.when(fiscalMapLocks[fiscal.getParty().ordinal()]).thenReturn(new Object());
     }
 
@@ -209,18 +205,24 @@ public class ElectionManagerTest {
 
     /* Fiscalization */
 
+    /**
+     * Attempting to register a fiscal on an already open election throws a {@link IllegalStateException}.
+     */
     @Test(expected = IllegalStateException.class)
     public void testCannotRegisterFiscalOnOpenElection() {
         // GIVEN
         electionManager.setElectionState(ElectionState.OPEN);
 
         // WHEN fixme
-        electionManager.addFiscal(new Fiscal(BOOTH, POLITICAL_PARTY));
+        electionManager.addFiscal(new Fiscal(BOOTH_NUMBER, POLITICAL_PARTY));
 
         // THEN
         // Exception should be thrown that election state was already open.
     }
 
+    /**
+     * Attempting to register a fiscal on an already closed election throws a {@link IllegalStateException}.
+     */
     @Test(expected = IllegalStateException.class)
     public void testCannotRegisterFiscalOnClosedElection() {
         // GIVEN
@@ -228,11 +230,66 @@ public class ElectionManagerTest {
         electionManager.setElectionState(ElectionState.CLOSED);
 
         // WHEN
-        electionManager.addFiscal(new Fiscal(BOOTH, POLITICAL_PARTY));
+        electionManager.addFiscal(new Fiscal(BOOTH_NUMBER, POLITICAL_PARTY));
 
         // THEN
         // Exception should be thrown that election state was already open.
     }
 
+    /**
+     * Registering a fiscal involves registering its political party and its booth.
+     * @throws IllegalStateException if the election is not in {@link ElectionState}: NOT_STARTED
+     */
+    @Test
+    public void testRegisterFiscalOnNotStartedElection() throws IllegalStateException {
+        // GIVEN
+        electionManager.setElectionState(ElectionState.NOT_STARTED);
+
+        // WHEN
+        boolean successful = electionManager.addFiscal(new Fiscal(BOOTH_NUMBER, POLITICAL_PARTY));
+
+        // THEN
+        assertTrue(successful);
+//        electionManager.getFiscalMap().get(POLITICAL_PARTY).forEach((integer, fiscals) -> fiscals.forEach(
+//                fiscal -> System.out.println("Party: " + fiscal.getParty() + "\nBooth: " + fiscal.getBooth())));
+        List<Fiscal> fiscals = electionManager.getFiscalMap().get(POLITICAL_PARTY).get(BOOTH_NUMBER);
+        assertFalse(fiscals.isEmpty());
+        assertEquals(fiscals.get(0).getParty(), POLITICAL_PARTY);
+        assertEquals(fiscals.get(0).getBooth(), BOOTH_NUMBER);
+    }
+
+    /**
+     * Attempting to query an election that hasn't started yet throws an {@link ElectionException}.
+     * @throws Exception can be {@link IllegalStateException} or {@link ElectionException} depending on the election state.
+     */
+    @Test(expected = ElectionException.class)
+    public void testCannotQueryOnNotStartedElection() throws Exception {
+        // GIVEN
+        electionManager.setElectionState(ElectionState.NOT_STARTED);
+
+        // WHEN
+        electionManager.queryElection(new QueryDescriptor(BOOTH_STRING, QueryType.BOOTH));
+
+        // THEN
+        // Exception should be thrown that election had not started yet.
+    }
+
+    /**
+     * Quering an open election returns only the results of the FPTP voting system.
+     * @throws Exception can be {@link IllegalStateException} or {@link ElectionException} depending on the election state.
+     */
+    @Test
+    public void testQueryShouldReturnFPTPResultsDuringOpenElection() throws Exception {
+        // GIVEN
+        electionManager.setElectionState(ElectionState.OPEN);
+        electionManager.addVotes(shortVotesCollection);
+
+        // WHEN
+        String results = electionManager.queryElection(new QueryDescriptor(BOOTH_STRING, QueryType.BOOTH));
+
+        // THEN
+        // todo: improve test parser for FPTP voting system
+        assertEquals("ElectionResults{winners=[TIGER], roundsRankings=[{TIGER=1.0}]}", results);
+    }
 
 }

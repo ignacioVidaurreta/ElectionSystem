@@ -41,6 +41,13 @@ public class ElectionManager {
         writeLock = rwLock.writeLock();
         populateFiscalMap(fiscalMap);
         this.electionState = ElectionState.NOT_STARTED;
+        for (int i = 0; i < fiscalMapLocks.length; i++) {
+            fiscalMapLocks[i] = new Object();
+        }
+    }
+
+    public Map<PoliticalParty, Map<Integer, List<Fiscal>>> getFiscalMap() {
+        return fiscalMap;
     }
 
     public boolean setElectionState(ElectionState state) {
@@ -174,7 +181,7 @@ public class ElectionManager {
             return new FPTPSystem(votesForProvince).getResults();
         }
         else {
-            throw new Exception("election is in an invalid state");
+            throw new IllegalStateException("election is in an invalid state");
         }
     }
 
@@ -194,7 +201,7 @@ public class ElectionManager {
             return new SPAVSystem(votes).getResults();
         }
         else {
-            throw new Exception("election is in an invalid state");
+            throw new IllegalStateException("election is in an invalid state");
         }
 
     }
@@ -208,7 +215,7 @@ public class ElectionManager {
             case CLOSED:
                 return new STARSystem(votes).getResults();
         }
-        throw new Exception("election is in an invalid state");
+        throw new IllegalStateException("election is in an invalid state");
     }
 
 }

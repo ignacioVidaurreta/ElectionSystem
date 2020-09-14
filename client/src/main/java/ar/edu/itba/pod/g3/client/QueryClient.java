@@ -43,6 +43,8 @@ public class QueryClient {
             ex.printStackTrace();
         } catch (NoVotesException noVotesException) {
             System.out.println("No votes");
+        } catch (ElectionException electionException) {
+            System.out.println("Election has not begun yet.");
         } catch (Exception ex) {
             logger.error(String.format("(%s): Exception occurred", ex));
             ex.printStackTrace();
