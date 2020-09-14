@@ -29,7 +29,7 @@ public class ElectionManager {
 
     private final List<Vote> votes = new ArrayList<>();
     private final Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap = new EnumMap<>(PoliticalParty.class);
-    private final Object[] fiscalMapLocks = new Object[7];
+    private Object[] fiscalMapLocks = new Object[7];
 
     private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap) {
         for(PoliticalParty politicalParty: PoliticalParty.values()) {
@@ -43,6 +43,9 @@ public class ElectionManager {
         readlock = rwLock.readLock();
         writeLock = rwLock.writeLock();
         populateFiscalMap(fiscalMap);
+        for(int i = 0; i<7 ; i++){
+            fiscalMapLocks[i] = new Object();
+        }
     }
 
     public boolean setElectionState(ElectionState state) {
