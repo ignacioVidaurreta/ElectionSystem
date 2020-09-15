@@ -4,10 +4,7 @@ import ar.edu.itba.pod.g3.api.enums.ElectionState;
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.api.enums.Province;
 import ar.edu.itba.pod.g3.api.enums.QueryType;
-import ar.edu.itba.pod.g3.api.models.ElectionException;
-import ar.edu.itba.pod.g3.api.models.Fiscal;
-import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
-import ar.edu.itba.pod.g3.api.models.Vote;
+import ar.edu.itba.pod.g3.api.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +19,7 @@ public class ElectionManager {
 
 
     private static final Logger logger = LoggerFactory.getLogger(ElectionManager.class);
-    private final Lock readlock;
+    private final Lock readLock;
     private final Lock writeLock;
 
     ElectionState electionState;
@@ -38,14 +35,34 @@ public class ElectionManager {
     }
 
     public ElectionManager() {
-        // Create a reentrant RWlock with fairness true
+        // Create a reentrant RWLock with fairness true
         ReadWriteLock rwLock = new ReentrantReadWriteLock(true);
-        readlock = rwLock.readLock();
+        readLock = rwLock.readLock();
         writeLock = rwLock.writeLock();
         populateFiscalMap(fiscalMap);
+        this.electionState = ElectionState.NOT_STARTED;
+        for (int i = 0; i < fiscalMapLocks.length; i++) {
+            fiscalMapLocks[i] = new Object();
+        }
+    }
+
+    public Map<PoliticalParty, Map<Integer, List<Fiscal>>> getFiscalMap() {
+        return fiscalMap;
     }
 
     public boolean setElectionState(ElectionState state) {
+        switch (this.electionState) {
+            case CLOSED:
+                if (state == ElectionState.OPEN) {
+                    throw new IllegalStateException("Election already closed.");
+                }
+                break;
+            case NOT_STARTED:
+                if (state == ElectionState.CLOSED) {
+                    throw new IllegalStateException("Election was never started.");
+                }
+                break;
+        }
         this.electionState = state;
         return true;
     }
@@ -68,7 +85,13 @@ public class ElectionManager {
     }
 
 
-    public boolean addVotes(Collection<Vote> newVotes) throws ElectionException {
+    public boolean addVotes(Collection<Vote> newVotes) throws ElectionException, NoVotesException, IllegalArgumentException {
+        if (newVotes == null) {
+            throw new IllegalArgumentException();
+        }
+        if (newVotes.isEmpty()) {
+            throw new NoVotesException();
+        }
         writeLock.lock();
         switch (electionState) {
             case NOT_STARTED:
@@ -88,7 +111,10 @@ public class ElectionManager {
         return true;
     }
 
-    public boolean addFiscal(Fiscal fiscal) {
+    public boolean addFiscal(Fiscal fiscal) throws IllegalStateException {
+        if (electionState != ElectionState.NOT_STARTED) {
+            throw new IllegalStateException("Fiscals cannot be added after election has begun.");
+        }
         synchronized (fiscalMapLocks[fiscal.getParty().ordinal()]) {
 
             Map<Integer, List<Fiscal>> partyMap = fiscalMap.get(fiscal.getParty());
@@ -104,7 +130,7 @@ public class ElectionManager {
     }
 
     public String queryElection(QueryDescriptor descriptor) throws Exception {
-        readlock.lock();
+        readLock.lock();
         QueryType queryType = descriptor.getType();
         String id = descriptor.getId();
         ElectionResults electionResults = null;
@@ -115,7 +141,7 @@ public class ElectionManager {
                     electionResults = queryBooth(boothId);
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
                 break;
@@ -125,7 +151,7 @@ public class ElectionManager {
                     electionResults = queryProvince(province);
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
                 break;
@@ -134,11 +160,11 @@ public class ElectionManager {
                     electionResults = queryNational();
                 }
                 catch(ElectionException e) {
-                    readlock.unlock();
+                    readLock.unlock();
                     throw e;
                 }
         }
-        readlock.unlock();
+        readLock.unlock();
         return electionResults.toString();
     }
 
@@ -155,7 +181,7 @@ public class ElectionManager {
             return new FPTPSystem(votesForProvince).getResults();
         }
         else {
-            throw new Exception("election is in an invalid state");
+            throw new IllegalStateException("election is in an invalid state");
         }
     }
 
@@ -175,7 +201,7 @@ public class ElectionManager {
             return new SPAVSystem(votes).getResults();
         }
         else {
-            throw new Exception("election is in an invalid state");
+            throw new IllegalStateException("election is in an invalid state");
         }
 
     }
@@ -189,7 +215,7 @@ public class ElectionManager {
             case CLOSED:
                 return new STARSystem(votes).getResults();
         }
-        throw new Exception("election is in an invalid state");
+        throw new IllegalStateException("election is in an invalid state");
     }
 
 }

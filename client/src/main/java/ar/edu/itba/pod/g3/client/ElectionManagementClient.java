@@ -20,29 +20,37 @@ public class ElectionManagementClient extends Client{
         logger.info("Initializing ElectionManagementClient...");
         Properties properties = System.getProperties();
         try {
-            if(properties.containsKey("action") && properties.containsKey("serverAddress")){
+            if(properties.containsKey("action") && properties.containsKey("serverAddress")) {
                 ManagementService remote = (ManagementService) getRemoteService(properties.getProperty("serverAddress"), MANAGEMENT);
                 executeAction(remote, properties.getProperty("action"));
-            }else {
+            } else {
                 logger.error("Invalid arguments. -Daction and -DserverAddress arguments must be present");
             }
-        }catch (RemoteException | NotBoundException ex){
+        } catch (RemoteException | NotBoundException ex){
             ex.printStackTrace();
         }
     }
 
-    private static void executeAction(ManagementService remote, String action) throws RemoteException{
-        switch (action){
+    private static void executeAction(ManagementService remote, String action) throws RemoteException {
+        switch (action) {
             case "open":
                 logger.info("Opening elections");
-                boolean state = remote.openElection();
-                System.out.println(state);
-                System.out.println("ELECTION STARTED");
+                try {
+                    boolean state = remote.openElection();
+                    System.out.println(state);
+                    System.out.println("ELECTION STARTED");
+                } catch (IllegalStateException illegalStateException) {
+                    System.out.println(illegalStateException.getMessage());
+                }
                 break;
             case "close":
                 logger.info("Closing elections");
-                remote.closeElection();
-                System.out.println("ELECTION CLOSED");
+                try {
+                    remote.closeElection();
+                    System.out.println("ELECTION CLOSED");
+                } catch (IllegalStateException illegalStateException) {
+                    System.out.println(illegalStateException.getMessage());
+                }
                 break;
             case "state":
                 logger.info("Querying for election state");
@@ -51,7 +59,6 @@ public class ElectionManagementClient extends Client{
             default:
                 logger.error("Unknown action");
                 System.exit(1);
-
         }
     }
 

@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionResults;
 import ar.edu.itba.pod.g3.server.votingSystem.FPTPSystem;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
@@ -21,7 +23,7 @@ import static ar.edu.itba.pod.g3.api.enums.Province.SAVANNAH;
 public class VotingSystemsTest {
 
     @Test
-    public void FPTPSystemTest() {
+    public void FPTPSystemTest() throws NoVotesException {
         Map<PoliticalParty,Integer> ranking1 = new HashMap<>();
         ranking1.put(TIGER,3);
         ranking1.put(LEOPARD,2);
@@ -51,7 +53,7 @@ public class VotingSystemsTest {
 
 
     @Test
-    public void STARSystemTest() {
+    public void STARSystemTest() throws NoVotesException {
         Map<PoliticalParty,Integer> ranking1 = new HashMap<>();
         ranking1.put(TIGER,3);
         ranking1.put(LEOPARD,2);
@@ -86,7 +88,7 @@ public class VotingSystemsTest {
 
 
     @Test
-    public void SPAVSystemTest() {
+    public void SPAVSystemTest() throws NoVotesException {
         Map<PoliticalParty,Integer> ranking1 = new HashMap<>();
         ranking1.put(TIGER,3);
         ranking1.put(LEOPARD,2);
@@ -128,4 +130,21 @@ public class VotingSystemsTest {
         System.out.println(electionResults);
     }
 
+    @Test(expected = NoVotesException.class)
+    public void NoVotesYetInFPTP() throws NoVotesException {
+        FPTPSystem fptpSystem = new FPTPSystem(new LinkedList<>());
+        fptpSystem.getResults();
+    }
+
+    @Test(expected = NoVotesException.class)
+    public void NoVotesYetInSPAV() throws NoVotesException {
+        SPAVSystem spavSystem = new SPAVSystem(new LinkedList<>());
+        spavSystem.getResults();
+    }
+
+    @Test(expected = NoVotesException.class)
+    public void NoVotesYetInSTAR() throws NoVotesException {
+        STARSystem starSystem = new STARSystem(new LinkedList<>());
+        starSystem.getResults();
+    }
 }

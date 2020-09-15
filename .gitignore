@@ -27,6 +27,8 @@ hs_err_pid*
 .idea/**
 **/target/**
 
-
 # Auxiliar data
 *.csv
+
+# macOS
+.DS_Store
