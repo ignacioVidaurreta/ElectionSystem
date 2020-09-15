@@ -26,6 +26,8 @@ public class FiscalizationClient extends Client {
             }
         }catch (RemoteException | NotBoundException ex){
             ex.printStackTrace();
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 
@@ -34,9 +36,12 @@ public class FiscalizationClient extends Client {
                 && properties.containsKey("party");
     }
 
-    private static void createAndRegisterFiscal(FiscalizationService remote, final String booth, final String party) throws RemoteException{
+    private static void createAndRegisterFiscal(FiscalizationService remote, final String booth, final String party) throws RemoteException, Exception{
         Fiscal fiscal = new Fiscal(Integer.parseInt(booth), PoliticalParty.valueOf(party));
-        //remote.registerFiscal(fiscal);
+        remote.registerFiscal(fiscal);
         System.out.println(String.format("Fiscal of %s registered on polling place %d", fiscal.getParty(), fiscal.getBooth()));
+        while(true){
+            //do nothing
+        }
     }
 }

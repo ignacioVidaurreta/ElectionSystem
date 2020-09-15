@@ -99,8 +99,12 @@ public class ElectionManager {
                 throw new ElectionException("Cannot add votes to an election that has not started");
             case OPEN:
                 votes.addAll(newVotes);
-                System.out.println(newVotes);
-                newVotes.forEach((System.out::println));
+                newVotes.forEach((vote) -> {
+                    Optional.ofNullable(this.fiscalMap.get(vote.getFptpWinner()).get(vote.getBooth())).ifPresent(fiscals -> {
+                        fiscals.forEach(Fiscal::notify);
+                        logger.info("Fiscals notified");
+                    });
+                });
                 emitNotifications(newVotes);
                 break;
             case CLOSED:

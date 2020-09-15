@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Service implementation for all service types
@@ -66,7 +68,7 @@ public class ElectionService implements ManagementService, VotingService, QueryS
      ************************* Fiscalization Service ************************
      ************************************************************************/
     @Override
-    public boolean registerFiscal(Fiscal fiscal) throws Exception {
-        return electionManager.addFiscal(fiscal);
+    public void registerFiscal(Fiscal fiscal) throws Exception {
+        electionManager.addFiscal(fiscal);
     }
 }
