@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,6 +31,7 @@ public class ElectionManager {
     private final List<Vote> votes = new ArrayList<>();
     private final Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> fiscalMap = new EnumMap<>(PoliticalParty.class);
     private final Object[] fiscalMapLocks = new Object[7];
+    private ExecutorService executorService;
 
     private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> fiscalMap) {
         for(PoliticalParty politicalParty: PoliticalParty.values()) {
@@ -46,6 +49,7 @@ public class ElectionManager {
         for (int i = 0; i < fiscalMapLocks.length; i++) {
             fiscalMapLocks[i] = new Object();
         }
+        executorService = Executors.newCachedThreadPool();
     }
 
     public Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> getFiscalMap() {
@@ -81,7 +85,7 @@ public class ElectionManager {
                 return;
             }
             for (NotificationConsumer fiscal : fiscals) {
-                fiscal.notify(vote);
+                fiscal.notifyFiscal(vote);
             }
         }
     }
@@ -104,17 +108,23 @@ public class ElectionManager {
                 writeLock.unlock();
                 newVotes.forEach((vote) -> {
                     Optional.ofNullable(this.fiscalMap.get(vote.getFptpWinner()).get(vote.getBooth())).ifPresent(fiscals -> {
-                        fiscals.forEach(NotificationConsumer::notify);
-                        logger.info("Fiscals notified");
+                        fiscals.forEach((fiscal)-> {
+                            try {
+                                fiscal.notifyFiscal(vote);
+                            }catch (RemoteException ex){
+                                ex.printStackTrace();
+                            }
+                        });
                     });
+                    logger.info("Fiscals notified");
                 });
+
                 emitNotifications(newVotes);
                 break;
             case CLOSED:
                 writeLock.unlock();
                 throw new ElectionException("Cannot add votes to an election that has been closed");
         }
-        // writeLock.unlock();
         return true;
     }
 

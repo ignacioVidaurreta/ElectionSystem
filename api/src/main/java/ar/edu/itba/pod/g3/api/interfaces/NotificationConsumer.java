@@ -8,7 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface NotificationConsumer extends Remote, Serializable {
-    void notify(Vote vote) throws RemoteException;
+    void notifyFiscal(Vote vote) throws RemoteException;
 
     PoliticalParty getParty() throws RemoteException;
 
