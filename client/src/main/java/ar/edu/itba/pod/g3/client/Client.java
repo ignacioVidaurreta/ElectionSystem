@@ -4,6 +4,8 @@ import ar.edu.itba.pod.g3.api.enums.ServiceName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,10 +21,13 @@ public abstract class Client {
     private static Logger logger = LoggerFactory.getLogger(Client.class);
     private static int REGISTRY_PORT = 1099;
 
-    static Remote getRemoteService(final String address, final ServiceName serviceName) throws NotBoundException, RemoteException{
+    static Remote getRemoteService(final String address, final ServiceName serviceName) throws NotBoundException, RemoteException, MalformedURLException {
         logger.info(String.format("Connecting to %s:%d/%s", address, REGISTRY_PORT, serviceName.getServiceName()));
+        /*
         final Registry registry = LocateRegistry.getRegistry(address, REGISTRY_PORT);
         return registry.lookup(serviceName.getServiceName());
+         */
+        return Naming.lookup(String.format("//%s/%s", address, serviceName.getServiceName()));
     }
 
     /* protected */ static boolean containsValidArguments(Properties properties){

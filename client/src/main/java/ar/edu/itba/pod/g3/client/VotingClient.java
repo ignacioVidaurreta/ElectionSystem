@@ -41,15 +41,6 @@ public class VotingClient extends Client {
     private static void executeAction(VotingService client, String votePath) {
         VoteParser parser = new VoteParser(votePath);
         parser.parseVotes();
-        parser.getParsedVotes().forEach(vote -> {
-            System.out.println(vote.getBooth());
-            System.out.println(vote.getProvince());
-            System.out.println(vote.getRanking());
-            System.out.println(vote.getFptpWinner());
-
-            System.out.println("---------------------------");
-        });
-
         try {
             client.emitVotes(parser.getParsedVotes());
         } catch (ElectionException electionException) {

@@ -4,6 +4,7 @@ import ar.edu.itba.pod.g3.api.interfaces.ManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Properties;
@@ -26,7 +27,7 @@ public class ElectionManagementClient extends Client{
             } else {
                 logger.error("Invalid arguments. -Daction and -DserverAddress arguments must be present");
             }
-        } catch (RemoteException | NotBoundException ex){
+        } catch (RemoteException | NotBoundException | MalformedURLException ex){
             ex.printStackTrace();
         }
     }

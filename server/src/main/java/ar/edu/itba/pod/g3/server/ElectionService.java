@@ -1,10 +1,7 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.ElectionState;
-import ar.edu.itba.pod.g3.api.interfaces.FiscalizationService;
-import ar.edu.itba.pod.g3.api.interfaces.ManagementService;
-import ar.edu.itba.pod.g3.api.interfaces.QueryService;
-import ar.edu.itba.pod.g3.api.interfaces.VotingService;
+import ar.edu.itba.pod.g3.api.interfaces.*;
 import ar.edu.itba.pod.g3.api.models.Fiscal;
 import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
 import ar.edu.itba.pod.g3.api.models.Vote;
@@ -14,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Service implementation for all service types
@@ -66,7 +65,7 @@ public class ElectionService implements ManagementService, VotingService, QueryS
      ************************* Fiscalization Service ************************
      ************************************************************************/
     @Override
-    public boolean registerFiscal(Fiscal fiscal) throws Exception {
-        return electionManager.addFiscal(fiscal);
+    public void registerFiscal(NotificationConsumer fiscal) throws Exception {
+        electionManager.addFiscal(fiscal);
     }
 }

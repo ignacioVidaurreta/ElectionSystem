@@ -3,6 +3,7 @@ package ar.edu.itba.pod.g3.api.models;
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.api.interfaces.NotificationConsumer;
 
+
 public class Fiscal implements NotificationConsumer {
     private final int booth;
     private final PoliticalParty party;
@@ -12,14 +13,16 @@ public class Fiscal implements NotificationConsumer {
     }
 
     @Override
-    public void notify(Vote vote) {
-        //TODO implement
+    public void notifyFiscal(Vote vote) {
+        System.out.println(String.format("New vote for %s in booth %d", vote.getFptpWinner(), vote.getBooth()));
     }
 
+    @Override
     public PoliticalParty getParty() {
         return party;
     }
 
+    @Override
     public int getBooth() {
         return booth;
     }
