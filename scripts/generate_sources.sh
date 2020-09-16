@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 cd ..
 
 echo "🗳   Building Elections Project! Please hold... "
 
 echo "CLEAN INSTALL STEP"
-mvn clean install
+mvn clean install || (echo "ERROR! Aborting ..." && exit 1)
 
 VERSION="1.0-SNAPSHOT"
 
