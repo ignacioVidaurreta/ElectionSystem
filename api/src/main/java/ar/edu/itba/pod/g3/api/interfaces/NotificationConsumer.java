@@ -1,10 +1,16 @@
 package ar.edu.itba.pod.g3.api.interfaces;
 
+import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.api.models.Vote;
 
+import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-@FunctionalInterface
-public interface NotificationConsumer extends Remote {
-    void notify(Vote vote);
+public interface NotificationConsumer extends Remote, Serializable {
+    void notify(Vote vote) throws RemoteException;
+
+    PoliticalParty getParty() throws RemoteException;
+
+    int getBooth() throws RemoteException;
 }

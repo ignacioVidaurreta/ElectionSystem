@@ -1,6 +1,11 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.ServiceName;
+import ar.edu.itba.pod.g3.api.interfaces.FiscalizationService;
+import ar.edu.itba.pod.g3.api.interfaces.ManagementService;
+import ar.edu.itba.pod.g3.api.interfaces.QueryService;
+import ar.edu.itba.pod.g3.api.interfaces.VotingService;
+import ar.edu.itba.pod.g3.api.models.Fiscal;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

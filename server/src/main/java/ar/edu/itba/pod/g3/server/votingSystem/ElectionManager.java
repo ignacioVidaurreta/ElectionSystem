@@ -4,10 +4,12 @@ import ar.edu.itba.pod.g3.api.enums.ElectionState;
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.api.enums.Province;
 import ar.edu.itba.pod.g3.api.enums.QueryType;
+import ar.edu.itba.pod.g3.api.interfaces.NotificationConsumer;
 import ar.edu.itba.pod.g3.api.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -25,10 +27,10 @@ public class ElectionManager {
     ElectionState electionState;
 
     private final List<Vote> votes = new ArrayList<>();
-    private final Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap = new EnumMap<>(PoliticalParty.class);
+    private final Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> fiscalMap = new EnumMap<>(PoliticalParty.class);
     private final Object[] fiscalMapLocks = new Object[7];
 
-    private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<Fiscal>>> fiscalMap) {
+    private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> fiscalMap) {
         for(PoliticalParty politicalParty: PoliticalParty.values()) {
             fiscalMap.put(politicalParty, new HashMap<>());
         }
@@ -46,7 +48,7 @@ public class ElectionManager {
         }
     }
 
-    public Map<PoliticalParty, Map<Integer, List<Fiscal>>> getFiscalMap() {
+    public Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> getFiscalMap() {
         return fiscalMap;
     }
 
@@ -71,21 +73,21 @@ public class ElectionManager {
         return electionState;
     }
 
-    private void emitNotifications(Collection<Vote> newVotes) {
+    private void emitNotifications(Collection<Vote> newVotes) throws RemoteException {
         for(Vote vote: newVotes) {
-            Map<Integer, List<Fiscal>> partyMap = fiscalMap.get(vote.getFptpWinner());
-            List<Fiscal> fiscals = partyMap.get(vote.getBooth());
+            Map<Integer, List<NotificationConsumer>> partyMap = fiscalMap.get(vote.getFptpWinner());
+            List<NotificationConsumer> fiscals = partyMap.get(vote.getBooth());
             if (fiscals == null) {
                 return;
             }
-            for (Fiscal fiscal : fiscals) {
+            for (NotificationConsumer fiscal : fiscals) {
                 fiscal.notify(vote);
             }
         }
     }
 
 
-    public boolean addVotes(Collection<Vote> newVotes) throws ElectionException, NoVotesException, IllegalArgumentException {
+    public boolean addVotes(Collection<Vote> newVotes) throws ElectionException, NoVotesException, IllegalArgumentException, RemoteException {
         if (newVotes == null) {
             throw new IllegalArgumentException();
         }
@@ -99,9 +101,10 @@ public class ElectionManager {
                 throw new ElectionException("Cannot add votes to an election that has not started");
             case OPEN:
                 votes.addAll(newVotes);
+                writeLock.unlock();
                 newVotes.forEach((vote) -> {
                     Optional.ofNullable(this.fiscalMap.get(vote.getFptpWinner()).get(vote.getBooth())).ifPresent(fiscals -> {
-                        fiscals.forEach(Fiscal::notify);
+                        fiscals.forEach(NotificationConsumer::notify);
                         logger.info("Fiscals notified");
                     });
                 });
@@ -111,22 +114,22 @@ public class ElectionManager {
                 writeLock.unlock();
                 throw new ElectionException("Cannot add votes to an election that has been closed");
         }
-        writeLock.unlock();
+        // writeLock.unlock();
         return true;
     }
 
-    public boolean addFiscal(Fiscal fiscal) throws IllegalStateException {
+    public boolean addFiscal(NotificationConsumer fiscal) throws IllegalStateException, RemoteException {
         if (electionState != ElectionState.NOT_STARTED) {
             throw new IllegalStateException("Fiscals cannot be added after election has begun.");
         }
         synchronized (fiscalMapLocks[fiscal.getParty().ordinal()]) {
 
-            Map<Integer, List<Fiscal>> partyMap = fiscalMap.get(fiscal.getParty());
+            Map<Integer, List<NotificationConsumer>> partyMap = fiscalMap.get(fiscal.getParty());
             if (partyMap.containsKey(fiscal.getBooth())) {
-                List<Fiscal> fiscals = partyMap.get(fiscal.getBooth());
+                List<NotificationConsumer> fiscals = partyMap.get(fiscal.getBooth());
                 fiscals.add(fiscal);
             } else {
-                List<Fiscal> fiscals = Collections.singletonList(fiscal);
+                List<NotificationConsumer> fiscals = Collections.singletonList(fiscal);
                 partyMap.put(fiscal.getBooth(), fiscals);
             }
             return true;

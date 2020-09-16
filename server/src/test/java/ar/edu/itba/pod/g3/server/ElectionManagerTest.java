@@ -3,6 +3,7 @@ package ar.edu.itba.pod.g3.server;
 import ar.edu.itba.pod.g3.api.enums.ElectionState;
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
 import ar.edu.itba.pod.g3.api.enums.QueryType;
+import ar.edu.itba.pod.g3.api.interfaces.NotificationConsumer;
 import ar.edu.itba.pod.g3.api.models.*;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.*;
@@ -149,7 +151,7 @@ public class ElectionManagerTest {
      * @throws IllegalArgumentException handles sending null values as collection of votes
      */
     @Test(expected = NoVotesException.class)
-    public void testVotesCastEmpty() throws ElectionException, NoVotesException {
+    public void testVotesCastEmpty() throws ElectionException, NoVotesException, RemoteException {
         // GIVEN
         Collection<Vote> votesEmpty = new LinkedList<>();
         // add votes to list
@@ -168,7 +170,7 @@ public class ElectionManagerTest {
      * @throws NoVotesException  handles emitting of empty votes
      */
     @Test
-    public void testVotesCastValid() throws NoVotesException, ElectionException {
+    public void testVotesCastValid() throws NoVotesException, ElectionException, RemoteException {
         // GIVEN
         electionManager.setElectionState(ElectionState.OPEN);
 
@@ -186,7 +188,7 @@ public class ElectionManagerTest {
      * @throws ElectionException handles casting votes to elections that are not open
      */
     @Test(expected = ElectionException.class)
-    public void testCannotCastVotesForNotStartedElection() throws NoVotesException, ElectionException {
+    public void testCannotCastVotesForNotStartedElection() throws NoVotesException, ElectionException, RemoteException {
         electionManager.addVotes(shortVotesCollection);
     }
 
@@ -197,7 +199,7 @@ public class ElectionManagerTest {
      * @throws ElectionException handles casting votes to elections that are not open
      */
     @Test(expected = ElectionException.class)
-    public void testCannotCastVotesForClosedElection() throws NoVotesException, ElectionException {
+    public void testCannotCastVotesForClosedElection() throws NoVotesException, ElectionException, RemoteException {
         // GIVEN
         electionManager.setElectionState(ElectionState.OPEN);
         electionManager.setElectionState(ElectionState.CLOSED);
@@ -215,7 +217,7 @@ public class ElectionManagerTest {
      * Attempting to register a fiscal on an already open election throws a {@link IllegalStateException}.
      */
     @Test(expected = IllegalStateException.class)
-    public void testCannotRegisterFiscalOnOpenElection() {
+    public void testCannotRegisterFiscalOnOpenElection() throws RemoteException {
         // GIVEN
         electionManager.setElectionState(ElectionState.OPEN);
 
@@ -230,7 +232,7 @@ public class ElectionManagerTest {
      * Attempting to register a fiscal on an already closed election throws a {@link IllegalStateException}.
      */
     @Test(expected = IllegalStateException.class)
-    public void testCannotRegisterFiscalOnClosedElection() {
+    public void testCannotRegisterFiscalOnClosedElection() throws RemoteException {
         // GIVEN
         electionManager.setElectionState(ElectionState.OPEN);
         electionManager.setElectionState(ElectionState.CLOSED);
@@ -248,7 +250,7 @@ public class ElectionManagerTest {
      * @throws IllegalStateException if the election is not in {@link ElectionState}: NOT_STARTED
      */
     @Test
-    public void testRegisterFiscalOnNotStartedElection() throws IllegalStateException {
+    public void testRegisterFiscalOnNotStartedElection() throws IllegalStateException, RemoteException {
         // GIVEN
         electionManager.setElectionState(ElectionState.NOT_STARTED);
 
@@ -259,7 +261,7 @@ public class ElectionManagerTest {
         assertTrue(successful);
 //        electionManager.getFiscalMap().get(POLITICAL_PARTY).forEach((integer, fiscals) -> fiscals.forEach(
 //                fiscal -> System.out.println("Party: " + fiscal.getParty() + "\nBooth: " + fiscal.getBooth())));
-        List<Fiscal> fiscals = electionManager.getFiscalMap().get(POLITICAL_PARTY).get(BOOTH_NUMBER);
+        List<NotificationConsumer> fiscals = electionManager.getFiscalMap().get(POLITICAL_PARTY).get(BOOTH_NUMBER);
         assertFalse(fiscals.isEmpty());
         assertEquals(fiscals.get(0).getParty(), POLITICAL_PARTY);
         assertEquals(fiscals.get(0).getBooth(), BOOTH_NUMBER);
