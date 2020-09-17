@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.PoliticalParty;
+import ar.edu.itba.pod.g3.api.enums.QueryType;
 import ar.edu.itba.pod.g3.api.models.NoVotesException;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionResults;
@@ -48,7 +49,7 @@ public class VotingSystemsTest {
         assertEquals(electionResults.getRoundsRankings().get(0).get(LYNX), 1.0/3);
         assertEquals(electionResults.getRoundsRankings().get(0).get(TIGER), 2.0/3);
 
-        System.out.println(electionResults);
+        System.out.println(electionResults.serialize(true, QueryType.BOOTH));
     }
 
 
@@ -83,7 +84,7 @@ public class VotingSystemsTest {
         assertEquals(electionResults.getRoundsRankings().get(1).get(BUFFALO), 1.0/3);
         assertEquals(electionResults.getRoundsRankings().get(1).get(TIGER), 2.0/3);
 
-        System.out.println(electionResults);
+        System.out.println(electionResults.serialize(true, QueryType.NATIONAL));
     }
 
 
@@ -127,7 +128,7 @@ public class VotingSystemsTest {
         assertEquals(electionResults.getRoundsRankings().get(2).get(OWL), 1.0/3);
         assertEquals(electionResults.getRoundsRankings().get(2).get(LEOPARD), 2.0/3);
 
-        System.out.println(electionResults);
+        System.out.println(electionResults.serialize(true, QueryType.PROVINCIAL));
     }
 
     @Test(expected = NoVotesException.class)

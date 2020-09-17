@@ -301,7 +301,6 @@ public class ElectionManagerTest {
         String results = electionManager.queryElection(new QueryDescriptor(BOOTH_STRING, QueryType.BOOTH));
 
         // THEN
-        // todo: improve test parser for FPTP voting system
-        assertEquals("ElectionResults{winners=[TIGER], roundsRankings=[{TIGER=1.0}]}", results);
+        assertEquals("Percentage;Party\n100.00%;TIGER\n", results);
     }
 }
