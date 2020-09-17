@@ -2,7 +2,6 @@ package ar.edu.itba.pod.g3.server;
 
 import ar.edu.itba.pod.g3.api.enums.ElectionState;
 import ar.edu.itba.pod.g3.api.interfaces.*;
-import ar.edu.itba.pod.g3.api.models.Fiscal;
 import ar.edu.itba.pod.g3.api.models.QueryDescriptor;
 import ar.edu.itba.pod.g3.api.models.Vote;
 import ar.edu.itba.pod.g3.server.votingSystem.ElectionManager;
@@ -11,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Service implementation for all service types

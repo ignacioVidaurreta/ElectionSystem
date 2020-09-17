@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import static ar.edu.itba.pod.g3.api.enums.ElectionState.NOT_STARTED;
 import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.*;
 import static ar.edu.itba.pod.g3.api.enums.PoliticalParty.TIGER;
 import static ar.edu.itba.pod.g3.api.enums.Province.JUNGLE;
@@ -54,7 +55,7 @@ public class ElectionManagerTest {
     @Test
     public void testOpenNotStartedElection() throws IllegalStateException {
         // GIVEN
-        // System.out.println(electionManager.getElectionState()); // not-started
+        assertEquals(NOT_STARTED, electionManager.getElectionState());
 
         // WHEN
         boolean started = electionManager.setElectionState(ElectionState.OPEN);
@@ -105,7 +106,7 @@ public class ElectionManagerTest {
     @Test(expected = IllegalStateException.class)
     public void testCloseNotStartedElection() throws IllegalStateException {
         // GIVEN
-        electionManager.setElectionState(ElectionState.NOT_STARTED);
+        assertEquals(NOT_STARTED, electionManager.getElectionState());
 
         // WHEN
         boolean closed = electionManager.setElectionState(ElectionState.CLOSED);
@@ -120,13 +121,13 @@ public class ElectionManagerTest {
     @Test
     public void testElectionStateBeforeOpening() {
         // GIVEN
-        electionManager.setElectionState(ElectionState.NOT_STARTED);
+        assertEquals(NOT_STARTED, electionManager.getElectionState());
 
         // WHEN
         ElectionState state = electionManager.getElectionState();
 
         // THEN
-        assertEquals(ElectionState.NOT_STARTED, state);
+        assertEquals(NOT_STARTED, state);
     }
 
     /* Voting */
@@ -252,7 +253,7 @@ public class ElectionManagerTest {
     @Test
     public void testRegisterFiscalOnNotStartedElection() throws IllegalStateException, RemoteException {
         // GIVEN
-        electionManager.setElectionState(ElectionState.NOT_STARTED);
+        assertEquals(NOT_STARTED, electionManager.getElectionState());
 
         // WHEN
         boolean successful = electionManager.addFiscal(new Fiscal(BOOTH_NUMBER, POLITICAL_PARTY));
@@ -277,7 +278,7 @@ public class ElectionManagerTest {
     @Test(expected = ElectionException.class)
     public void testCannotQueryOnNotStartedElection() throws Exception {
         // GIVEN
-        electionManager.setElectionState(ElectionState.NOT_STARTED);
+        assertEquals(NOT_STARTED, electionManager.getElectionState());
 
         // WHEN
         electionManager.queryElection(new QueryDescriptor(BOOTH_STRING, QueryType.BOOTH));

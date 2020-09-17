@@ -33,6 +33,9 @@ public class ElectionManager {
     private final Object[] fiscalMapLocks = new Object[7];
     private ExecutorService executorService;
 
+    private final Map<Integer, ElectionResults> finalBoothResults = new HashMap<>();
+    private final Map<Province, ElectionResults> finalProvincialResults = new EnumMap<>(Province.class);
+
     private void populateFiscalMap(Map<PoliticalParty, Map<Integer, List<NotificationConsumer>>> fiscalMap) {
         for(PoliticalParty politicalParty: PoliticalParty.values()) {
             fiscalMap.put(politicalParty, new HashMap<>());
@@ -57,20 +60,13 @@ public class ElectionManager {
     }
 
     public boolean setElectionState(ElectionState state) {
-        switch (this.electionState) {
-            case CLOSED:
-                if (state == ElectionState.OPEN) {
-                    throw new IllegalStateException("Election already closed.");
-                }
-                break;
-            case NOT_STARTED:
-                if (state == ElectionState.CLOSED) {
-                    throw new IllegalStateException("Election was never started.");
-                }
-                break;
+        if (this.electionState == ElectionState.NOT_STARTED && state == ElectionState.OPEN ||
+            this.electionState == ElectionState.OPEN        && state == ElectionState.CLOSED) {
+            this.electionState = state;
+            return true;
         }
-        this.electionState = state;
-        return true;
+        throw new IllegalStateException(String.format("Invalid transition from %s to %s", this.electionState, state));
+
     }
 
     public ElectionState getElectionState() {
@@ -157,7 +153,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryBooth(boothId);
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
@@ -167,7 +163,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryProvince(province);
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
@@ -176,7 +172,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryNational();
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
@@ -190,12 +186,24 @@ public class ElectionManager {
             throw new ElectionException("The election has not started");
         }
 
-        List<Vote> votesForProvince = votes .stream()
+        if (electionState == ElectionState.CLOSED) {
+            if (finalBoothResults.containsKey(boothId)) {
+                return finalBoothResults.get(boothId);
+            } else {
+                List<Vote> votesForBooth = votes.stream()
+                                                .filter(v -> v.getBooth() == boothId)
+                                                .collect(Collectors.toList());
+                ElectionResults results = new FPTPSystem(votesForBooth).getResults();
+                finalBoothResults.put(boothId, results);
+                return results;
+            }
+        }
+
+        if (electionState == ElectionState.OPEN) {
+            List<Vote> votesForBooth = votes.stream()
                                             .filter(v -> v.getBooth() == boothId)
                                             .collect(Collectors.toList());
-
-        if (electionState == ElectionState.OPEN || electionState == ElectionState.CLOSED) {
-            return new FPTPSystem(votesForProvince).getResults();
+            return new FPTPSystem(votesForBooth).getResults();
         }
         else {
             throw new IllegalStateException("election is in an invalid state");
@@ -207,20 +215,28 @@ public class ElectionManager {
             throw new ElectionException("The election has not started");
         }
 
-        List<Vote> votesForProvince = votes .stream()
-                                            .filter(v -> v.getProvince() == province)
-                                            .collect(Collectors.toList());
-
-        if (electionState == ElectionState.OPEN) {
-            return new FPTPSystem(votes).getResults();
+        if (electionState == ElectionState.CLOSED) {
+            if (finalProvincialResults.containsKey(province)) {
+                return finalProvincialResults.get(province);
+            }
+            else {
+                List<Vote> votesForProvince = votes .stream()
+                                                    .filter(v -> v.getProvince() == province)
+                                                    .collect(Collectors.toList());
+                ElectionResults results = new SPAVSystem(votesForProvince).getResults();
+                finalProvincialResults.put(province, results);
+                return results;
+            }
         }
-        else if (electionState == ElectionState.CLOSED) {
-            return new SPAVSystem(votesForProvince).getResults();
+        else if (electionState == ElectionState.OPEN) {
+            List<Vote> votesForProvince = votes .stream()
+                                                .filter(v -> v.getProvince() == province)
+                                                .collect(Collectors.toList());
+            return new FPTPSystem(votesForProvince).getResults();
         }
         else {
             throw new IllegalStateException("election is in an invalid state");
         }
-
     }
 
     private ElectionResults queryNational() throws Exception {
