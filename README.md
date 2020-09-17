@@ -32,20 +32,44 @@ On terminal 2, run the server:
 Finally, you will use terminal 3 to run the different clients according to the 
 instructions given. Example usage:
 
-_Open Elections_
+_Manage election status_
 ```
-./run-management.sh -Daction=open -DserverAddress="localhost"
-```
-
-_Submit Votes in /tmp/votes.csv_
-```
-./run-vote.sh -DvotesPath="/tmp/votes.csv" -DserverAddress="localhost"
+./run-management -Daction=[open|close|status] -DserverAddress=<ip>
 ```
 
-_Query for votes and save result in /tmp/result.csv_
+_Submit Votes in the path_
 ```
-./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/result.csv"
+./run-vote -DvotesPath=<path_to_csv> -DserverAddress=<ip>
 ```
+  We mostly tested this using /tmp but you can also use relative paths starting from `client/src/main/assembly/overlay`
+
+_Register fiscal_
+```
+./run-fiscal.sh -DserverAddress=<ip> -Did=<booth> -Dparty=<PartyName>"
+```
+(Remember that fiscals must be registered before the election is opened)
+
+_Query for votes and save result in outPath_
+```
+./run-query -DserverAddress=<ip> -DoutPath=<filename> [ -Dstate=<stateName> | -Did=<pollingPlaceNumber> ]
+```
+
+## Testing 
+### Unit Tests
+Run 
+```
+mvn test
+```
+
+### E2E Tests
+Run:
+```
+./integration-tests.sh (vote_bulk|concurrency|fiscal_test) [repetitions]
+```
+
+**Important**
+For the three tests you need to run on your own terminal the server and the registry.
+And for `vote_bulk` and `concurrency` you must also open the elections yourself.
 
 
 ## Authors
