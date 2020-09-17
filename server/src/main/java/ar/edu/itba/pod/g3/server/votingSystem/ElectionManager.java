@@ -153,7 +153,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryBooth(boothId);
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
@@ -163,7 +163,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryProvince(province);
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
@@ -172,7 +172,7 @@ public class ElectionManager {
                 try{
                     electionResults = queryNational();
                 }
-                catch(ElectionException e) {
+                catch(ElectionException | NoVotesException e) {
                     readLock.unlock();
                     throw e;
                 }
