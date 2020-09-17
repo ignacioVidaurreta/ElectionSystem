@@ -2,15 +2,21 @@
 
 votes_path="/tmp/rand_votes.csv"
 
-call_votes="$(./run-vote.sh -DvotesPath="$votes_path" -DserverAddress="localhost" >> out.log&)"
+
 
 
 function run_gazzilion_votes(){
-  for i in $(seq 50); do $call_votes ; done
+  REPS=${1:-30}
+  echo $REPS
+  for i in $(seq $REPS); do
+    generate_random_file 3000
+    ./run-vote.sh -DvotesPath="$votes_path" -DserverAddress="localhost" >> out.log&
+  done
 }
 
 function run_concurrent_test() {
-  for i in $(seq 30); do
+  REPS=${1:-10}
+  for i in $(seq $REPS); do
     if [ "$((i % 3))" -eq 0 ]; then
       ./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/result$i.csv"&
     else
@@ -30,6 +36,7 @@ function generate_random_file(){
   parties=("TIGER" "JACKALOPE" "LEOPARD" "LYNX") # Only using a few parties, not all.
   provinces=("JUNGLE" "SAVANNAH" "TUNDRA")
 
+  # The first line overwrites what was written before
   for i in $(seq "$1"); do
     echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> $votes_path
   done
