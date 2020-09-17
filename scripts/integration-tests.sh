@@ -14,26 +14,33 @@ function run_gazzilion_votes(){
 }
 
 function run_concurrent_test() {
-  REPS=${1:-10}
+  REPS=${1:-20}
+
+  # Initial population of votes
+  generate_random_file 0
+  ./run-vote.sh -DvotesPath="$VOTE_PATH"_0.csv -DserverAddress="localhost" > out.log
   acum=0
   for i in $(seq $REPS); do
-    if [ "$(($acum % 3))" -eq 0 ]; then
+    if [ "$(($acum % 5))" -eq 0 ]; then
       ./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/g3/result$acum.csv"&
     else
       generate_random_file "$acum"
       ./run-vote.sh -DvotesPath="$VOTE_PATH"_"$acum".csv -DserverAddress="localhost" >> out.log&
     fi
+    acum=$(( acum + 1 ))
   done
   sleep 10
   ./run-management.sh -Daction=close -DserverAddress="localhost"
-  ./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/resultFinal.csv"
+  ./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/g3/resultFinal.csv"
+
+  echo "$(cat out.log | grep Error)"
 }
 
 function generate_random_file(){
   booths=(1000 1001 1002 1003 1004 1005)
   parties=("TIGER" "JACKALOPE" "LEOPARD" "LYNX") # Only using a few parties, not all.
   provinces=("JUNGLE" "SAVANNAH" "TUNDRA")
-  for i in $(seq 3000); do
+  for i in $(seq 300); do
     echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> "$VOTE_PATH"_"$1".csv
   done
   
