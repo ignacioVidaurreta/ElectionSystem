@@ -27,29 +27,22 @@ public class SPAVSystem implements VotingSystem {
         List<PoliticalParty> winners = new LinkedList<>();
         List<Map<PoliticalParty, Double>> roundsRankings = new LinkedList<>();
 
-        // Parsing votes to doubles for next calculation
-        List<Map<PoliticalParty, Double>> list = this.votes.stream().map(v -> v.getRanking().entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> e.getValue().doubleValue()
-                ))).collect(Collectors.toList());
-
         // Three winners for each province, hence three rounds for each province
         for(int round = 0; round < 3; round++) {
 
-            // Calculation and accumulation of the value of each ballot:
+            Map<PoliticalParty, Double> roundRanking = new HashMap<>();
+
+            // For each political party we calculate all ballots
+            // that contain such party and accumulate the index:
             // 1/(1+m) where m is the number of candidates
             // approved on that ballot who were already elected
-            Map<PoliticalParty, Double> roundRanking = list.stream().flatMap(m ->  {m.entrySet()
-                    .forEach(e -> e.setValue(1.0 / (1 + amountOfElementsInCommon(winners, m.keySet()))));return m.entrySet().stream();})
-                    .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue,
-                    Double::sum));
+            Arrays.stream(PoliticalParty.values()).filter(p -> !winners.contains(p))
+                    .forEach(p -> roundRanking.put(p,
+                                    this.votes.stream()
+                                            .filter(v -> v.getRanking().containsKey(p))
+                                            .mapToDouble(v -> 1.0/(1 + amountOfElementsInCommon(winners, v.getRanking().keySet())))
+                                            .sum()));
 
-            // The unelected candidate who has the highest approval score is elected for the round
-            winners.forEach(roundRanking::remove);
             winners.add(Collections.max(roundRanking.entrySet(), new DoubleRankingComparator()).getKey());
             roundsRankings.add(roundRanking);
         }

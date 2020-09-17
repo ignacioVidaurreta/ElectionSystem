@@ -228,14 +228,12 @@ public class ElectionManager {
                 return results;
             }
         }
-
         else if (electionState == ElectionState.OPEN) {
             List<Vote> votesForProvince = votes .stream()
                                                 .filter(v -> v.getProvince() == province)
                                                 .collect(Collectors.toList());
             return new FPTPSystem(votesForProvince).getResults();
         }
-
         else {
             throw new IllegalStateException("election is in an invalid state");
         }
