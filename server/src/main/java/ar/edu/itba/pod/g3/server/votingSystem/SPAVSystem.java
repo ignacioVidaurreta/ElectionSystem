@@ -43,6 +43,7 @@ public class SPAVSystem implements VotingSystem {
                                             .mapToDouble(v -> 1.0/(1 + amountOfElementsInCommon(winners, v.getRanking().keySet())))
                                             .sum()));
 
+            roundRanking.entrySet().removeIf(e -> e.getValue() == 0);
             winners.add(Collections.max(roundRanking.entrySet(), new DoubleRankingComparator()).getKey());
             roundsRankings.add(roundRanking);
         }
