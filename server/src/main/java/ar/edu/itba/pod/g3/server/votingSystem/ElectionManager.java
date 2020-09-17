@@ -178,7 +178,7 @@ public class ElectionManager {
                 }
         }
         readLock.unlock();
-        return electionResults.toString();
+        return electionResults.serialize(electionState == ElectionState.CLOSED, queryType);
     }
 
     private ElectionResults queryBooth(int boothId) throws Exception {

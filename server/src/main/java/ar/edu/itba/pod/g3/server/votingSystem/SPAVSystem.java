@@ -27,15 +27,16 @@ public class SPAVSystem implements VotingSystem {
         List<PoliticalParty> winners = new LinkedList<>();
         List<Map<PoliticalParty, Double>> roundsRankings = new LinkedList<>();
 
+        // Parsing votes to doubles for next calculation
+        List<Map<PoliticalParty, Double>> list = this.votes.stream().map(v -> v.getRanking().entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().doubleValue()
+                ))).collect(Collectors.toList());
+
         // Three winners for each province, hence three rounds for each province
         for(int round = 0; round < 3; round++) {
-            // Parsing votes to doubles for next calculation
-            List<Map<PoliticalParty, Double>> list = this.votes.stream().map(v -> v.getRanking().entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            e -> e.getValue().doubleValue()
-                    ))).collect(Collectors.toList());
 
             // Calculation and accumulation of the value of each ballot:
             // 1/(1+m) where m is the number of candidates
