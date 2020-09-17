@@ -6,7 +6,7 @@ function run_gazzilion_votes(){
   REPS=${1:-30}
   echo $REPS
   for i in $(seq $REPS); do
-    generate_random_file 3000
+    generate_random_file 3000 $i
     ./run-vote.sh -DvotesPath="$VOTES_PATH" -DserverAddress="localhost" >> out.log&
   done
 }
@@ -28,13 +28,12 @@ function run_concurrent_test() {
 }
 
 function generate_random_file(){
-  rm -rf $VOTES_PATH
   booths=(1000 1001 1002 1003 1004 1005)
   parties=("TIGER" "JACKALOPE" "LEOPARD" "LYNX") # Only using a few parties, not all.
   provinces=("JUNGLE" "SAVANNAH" "TUNDRA")
 
   for i in $(seq "$1"); do
-    echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> $VOTES_PATH
+    echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> "$VOTES_PATH"_$2
   done
   
 }

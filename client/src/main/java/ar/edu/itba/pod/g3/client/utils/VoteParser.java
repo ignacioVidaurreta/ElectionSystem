@@ -34,6 +34,7 @@ public class VoteParser {
             br.close();
         }catch(IOException ex){
             logger.error("There was an error while parsing the votes");
+            logger.error("Failed with the following exception", ex);
             ex.printStackTrace();
         }
     }
