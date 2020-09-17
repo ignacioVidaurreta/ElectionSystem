@@ -62,7 +62,9 @@ function run_fiscal_test(){
 
 function main(){
   # Setup testing workplace
-  mkdir /tmp/g3
+  if [ ! -d "/tmp/g3/" ]; then
+    mkdir /tmp/g3
+  fi
   command="$1"
   shift
   case "$command" in
