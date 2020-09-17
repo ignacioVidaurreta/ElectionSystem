@@ -9,7 +9,7 @@
   <groupId>ar.edu.itba.pod.g3</groupId>
   <artifactId>election-system-server</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>election-system-server</name>
+  <name>tpe1-g3-server</name>
   <dependencies>
     <dependency>
       <groupId>ar.edu.itba.pod.g3</groupId>
