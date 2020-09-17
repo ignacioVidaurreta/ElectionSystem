@@ -1,7 +1,5 @@
 #!/bin/bash
 
-VOTES_PATH="/tmp/rand_votes.csv"
-
 function run_gazzilion_votes(){
   REPS=${1:-30}
   echo $REPS
@@ -17,9 +15,8 @@ function run_concurrent_test() {
     if [ "$((i % 3))" -eq 0 ]; then
       ./run-query.sh -DserverAddress="localhost" -DoutPath="/tmp/result$i.csv"&
     else
-      echo "Hello"
       generate_random_file 3000
-      ./run-vote.sh -DvotesPath="$VOTES_PATH" -DserverAddress="localhost" >> out.log&
+      ./run-vote.sh -DvotesPath="/tmp/g3/rand_votes_$i.csv" -DserverAddress="localhost" >> out.log&
     fi
   done
   sleep 10
@@ -33,7 +30,7 @@ function generate_random_file(){
   provinces=("JUNGLE" "SAVANNAH" "TUNDRA")
 
   for i in $(seq "$1"); do
-    echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> "$VOTES_PATH"_$2
+    echo "${booths[$((RANDOM % 6))]};${provinces[$((RANDOM % 3))]};TIGER|$((1 + RANDOM % 5)),LEOPARD|$((1 + RANDOM % 5)),JACKALOPE|$((1 + RANDOM % 5)),LYNX|$((1 + RANDOM % 5));${parties[$((RANDOM % 4))]}" >> "/tmp/g3/rand_votes_$i.csv"
   done
   
 }
