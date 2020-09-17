@@ -212,10 +212,10 @@ public class ElectionManager {
                                             .collect(Collectors.toList());
 
         if (electionState == ElectionState.OPEN) {
-            return new FPTPSystem(votesForProvince).getResults();
+            return new FPTPSystem(votes).getResults();
         }
         else if (electionState == ElectionState.CLOSED) {
-            return new SPAVSystem(votes).getResults();
+            return new SPAVSystem(votesForProvince).getResults();
         }
         else {
             throw new IllegalStateException("election is in an invalid state");
