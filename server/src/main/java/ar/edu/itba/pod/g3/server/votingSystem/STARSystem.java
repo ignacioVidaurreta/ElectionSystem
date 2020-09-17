@@ -49,6 +49,7 @@ public class STARSystem implements VotingSystem {
                         .stream()
                         .filter(e -> e.getKey().equals(fistPlaceFirstRound) || e.getKey().equals(secondPlaceFirstRound))
                         .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.summingInt(Map.Entry::getValue))))
+                .filter(m -> !m.isEmpty())
                 .collect(Collectors.toList());
 
         // Considering one winner per ballot
