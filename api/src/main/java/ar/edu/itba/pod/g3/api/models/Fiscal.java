@@ -14,7 +14,7 @@ public class Fiscal implements NotificationConsumer {
 
     @Override
     public void notifyFiscal(Vote vote) {
-        System.out.println(String.format("New vote for %s in booth %d", vote.getFptpWinner(), vote.getBooth()));
+        System.out.println(String.format("New vote for %s on polling place %d", vote.getFptpWinner(), vote.getBooth()));
     }
 
     @Override

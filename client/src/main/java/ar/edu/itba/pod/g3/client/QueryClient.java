@@ -42,7 +42,7 @@ public class QueryClient {
             logger.error(String.format("(%s): IOException occurred", ex));
             ex.printStackTrace();
         } catch (NoVotesException noVotesException) {
-            System.out.println("Displaying results for " + noVotesException.getMessage() + " system.\n");
+            System.out.println("Displaying results for " + noVotesException.getMessage() + " system.");
             System.out.println("No votes");
         } catch (ElectionException electionException) {
             System.out.println("Election has not begun yet.");
